@@ -1,7 +1,10 @@
-﻿namespace DSCore.Ini
+﻿using LiteDB;
+
+namespace DSCore.Ini
 {
     public sealed class Thruster
     {
+        [BsonId]
         public string Nickname { get; set; }
         public uint Name { get; set; }
         public uint Infocard { get; set; }
