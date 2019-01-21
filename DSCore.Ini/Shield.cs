@@ -19,6 +19,7 @@
         Graviton,
         Molecular,
         Drone,
-        Nomad
+        Nomad,
+        Unknown
     }
 }

@@ -6,12 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotImaging.UI" Version="4.8.3" />
     <PackageReference Include="LiteDB" Version="4.1.4" />
     <PackageReference Include="MadMilkman.Ini.Unofficial" Version="1.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DSCore.Ini\DSCore.Ini.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="LibreLancer.Base">
+      <HintPath>LibreLancer.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="LibreLancer.Data">
+      <HintPath>LibreLancer.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2\System.Windows.Forms.dll</HintPath>
     </Reference>
