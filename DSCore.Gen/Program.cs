@@ -160,10 +160,11 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    if (Math.Abs(good.GoodBuyPrice) < 1 || string.IsNullOrEmpty(good.Equipment) || Math.Abs(good.GoodSellPrice) < 1)
-                        break;
-                    goods.Add(good);
+                    
                 }
+                if (good.GoodBuyPrice == 0 || string.IsNullOrEmpty(good.Equipment) || good.GoodSellPrice == 0)
+                    continue;
+                goods.Add(good);
             }
 
             ini = new IniFile(iniOptions);
@@ -211,10 +212,9 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    if (Math.Abs(good.GoodBuyPrice) < 1 || string.IsNullOrEmpty(good.Equipment) || Math.Abs(good.GoodSellPrice) < 1)
-                        break;
-                    goods.Add(good);
+                    
                 }
+                goods.Add(good);
             }
 
             ini = new IniFile(iniOptions);
@@ -262,10 +262,9 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    if (Math.Abs(good.GoodBuyPrice) < 1 || string.IsNullOrEmpty(good.Equipment) || Math.Abs(good.GoodSellPrice) < 1)
-                        break;
-                    goods.Add(good);
+                    
                 }
+                goods.Add(good);
             }
 
             ini = new IniFile(iniOptions);
@@ -313,10 +312,9 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    if (Math.Abs(good.GoodBuyPrice) < 1 || string.IsNullOrEmpty(good.Equipment) || Math.Abs(good.GoodSellPrice) < 1)
-                        break;
-                    goods.Add(good);
+                    
                 }
+                goods.Add(good);
             }
 
             ini = new IniFile(iniOptions);
@@ -364,10 +362,9 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    if (Math.Abs(good.GoodBuyPrice) < 1 || string.IsNullOrEmpty(good.Equipment) || Math.Abs(good.GoodSellPrice) < 1)
-                        break;
-                    goods.Add(good);
+                    
                 }
+                goods.Add(good);
             }
 
             #endregion
@@ -975,53 +972,72 @@ namespace DSCore.Gen
                 var dbInfocards = db.GetCollection<Infocard>("Infocards");
 
                 // Then we populate them
-                InsertToDatabase(dbArmours, armours);
-                InsertToDatabase(dbCloaks, cloaks);
-                InsertToDatabase(dbDisrupters, disrupters);
-                InsertToDatabase(dbCommodities, commodities);
-                InsertToDatabase(dbCMs, droppers);
-                InsertToDatabase(dbFactions, factions);
-                InsertToDatabase(dbGoods, goods);
-                InsertToDatabase(dbPowerplants, powerplants);
-                InsertToDatabase(dbScanners, scanners);
-                InsertToDatabase(dbShields, shields);
-                InsertToDatabase(dbShips, ships);
-                InsertToDatabase(dbWeapons, weapons);
-                InsertToDatabase(dbThrusers, thrusters);
-                InsertToDatabase(dbInfocards, infocards);
-                foreach (var i in dbInfocards.FindAll())
-                {
-                    Console.WriteLine(i.Key);
-                    Console.WriteLine(i.Value);
-                }
+                Console.WriteLine();
+                InsertToDatabase(dbArmours, armours, "Armours");
+                InsertToDatabase(dbCloaks, cloaks, "Cloaks");
+                InsertToDatabase(dbDisrupters, disrupters, "Disrupters");
+                InsertToDatabase(dbCommodities, commodities, "Commodities");
+                InsertToDatabase(dbCMs, droppers, "CMs");
+                InsertToDatabase(dbFactions, factions, "Factions");
+                InsertToDatabase(dbGoods, goods, "Goods");
+                InsertToDatabase(dbPowerplants, powerplants, "Powerplants");
+                InsertToDatabase(dbScanners, scanners, "Scanners");
+                InsertToDatabase(dbShields, shields, "Shields");
+                InsertToDatabase(dbShips, ships, "Ships");
+                InsertToDatabase(dbWeapons, weapons, "Weapons");
+                InsertToDatabase(dbThrusers, thrusters, "Thrusters");
+                InsertToDatabase(dbInfocards, infocards, "Infocards");
             }
 
             // Time to check that it worked!
             using (var db = new LiteDatabase(root + @"\FLData.db"))
             {
+                Console.WriteLine();
                 Console.WriteLine("Running Tests:");
                 var d = db.GetCollection<Commodity>("Commodities");
-                Console.WriteLine(d.Count());
-                Console.WriteLine("Commodity: " + d.FindById("commodity_slaves").Nickname);
-                Console.WriteLine("Commodity: " + d.FindById("commodity_cardamine").Nickname);
-                Console.WriteLine("Commodity: " + d.FindById("commodity_oxygen").Nickname);
+                Console.WriteLine($"Commodity Count: {d.Count()}");
+                Console.WriteLine("Random Commodity: " + d.FindAll().Skip(new Random().Next(0, d.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Commodity: " + d.FindAll().Skip(new Random().Next(0, d.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Commodity: " + d.FindAll().Skip(new Random().Next(0, d.Count())).Take(1).First().Nickname);
+                Console.WriteLine();
+
+                var g = db.GetCollection<Good>("Goods");
+                Console.WriteLine($"Good Count: {g.Count()}");
+                Console.WriteLine("Random Good: " + g.FindAll().Skip(new Random().Next(0, g.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Good: " + g.FindAll().Skip(new Random().Next(0, g.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Good: " + g.FindAll().Skip(new Random().Next(0, g.Count())).Take(1).First().Nickname);
+                Console.WriteLine();
+
+                var i = db.GetCollection<Infocard>("Infocards");
+                Console.WriteLine($"Infocard Count: {i.Count()}");
+                Console.WriteLine("Random Infocard: " + i.FindAll().Skip(new Random().Next(0, i.Count())).Take(1).First().Value);
+                Console.WriteLine("Random Infocard: " + i.FindAll().Skip(new Random().Next(0, i.Count())).Take(1).First().Value);
+                Console.WriteLine("Random Infocard: " + i.FindAll().Skip(new Random().Next(0, i.Count())).Take(1).First().Value);
+                Console.WriteLine();
                 Console.ReadLine();
             }
         }
 
-        static void InsertToDatabase<T>(LiteCollection<T> collection, List<T> list)
+        static void InsertToDatabase<T>(LiteCollection<T> collection, List<T> list, string name)
         {
+            int i = 0;
             foreach (T x in list)
             {
                 try
                 {
                     collection.Insert(x);
+                    SetProgress(name, i, list.Count);
+                    i++;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception during database creation: " + ex.Message);
-                }
+                catch (Exception) { }
             }
+        }
+
+        static void SetProgress(string name, int index, int count)
+        {
+            Console.Write($"\r|    Inserting into {name}. {100 * (index + 1) / count} % completed.");
+            if (index + 1 == count)
+                Console.WriteLine();
         }
 
         static List<Infocard> SetupInfocards(string root)
