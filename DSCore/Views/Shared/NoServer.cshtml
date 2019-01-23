@@ -1,0 +1,11 @@
+﻿@model PageException
+@{
+    ViewData["Title"] = "Quoth The Server 404";
+}
+
+<h3>It seems we are unable to contact the API!</h3>
+<p>Without access to the API, we can't allow you to see the beautiful stats of Discovery's content. 
+    If this hasn't already been reported, and you're sure it's not just on your end, make a post about this
+    on the forums.</p>
+
+<p><strong>Exception Information: </strong> @Model.Exception.Message</p>

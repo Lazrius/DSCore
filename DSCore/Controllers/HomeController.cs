@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DSCore.Models;
+using DSCore.Utils;
 
 namespace DSCore.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : InheritController
     {
         public IActionResult Index()
         {
