@@ -1,0 +1,18 @@
+﻿@using DSCore.Ini
+@model List<Commodity>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1>Welcome to DSCore</h1>
+    <p>Your one stop shop for everything <a href="https://discoverygc.com">Discovery</a>.</p>
+
+    <div class="window">
+        <h2>Commodities</h2><br /><br />
+        @foreach (Commodity commodity in ViewData.Model)
+        {
+            
+        }
+    </div>
+</div>

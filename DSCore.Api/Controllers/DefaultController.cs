@@ -19,7 +19,8 @@ namespace DSCore.Api.Controllers
         [HttpGet]
         public ActionResult<string> Get(string nickname)
         {
-            return "well hi";                
+            this.HttpContext.Response.StatusCode = 200;
+            return "Hi. This is a test page!";
         }
     }
 }

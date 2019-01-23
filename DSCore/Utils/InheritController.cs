@@ -13,7 +13,7 @@ namespace DSCore.Utils
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost:3080/api");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:3080/api");
             request.AllowAutoRedirect = false;
             //request.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             try

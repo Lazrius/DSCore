@@ -5,12 +5,8 @@ using LiteDB;
 
 namespace DSCore.Ini
 {
-    public sealed class Ship
+    public sealed class Ship : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Name { get; set; }
-        public uint Infocard { get; set; }
         public int CargoSize { get; set; }
         public int Nanobots { get; set; }
         public int ShieldBats { get; set; }

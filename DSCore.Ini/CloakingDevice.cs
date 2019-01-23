@@ -5,12 +5,8 @@ using LiteDB;
 
 namespace DSCore.Ini
 {
-    public sealed class CloakingDevice
+    public sealed class CloakingDevice : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Infocard { get; set; }
-        public uint Name { get; set; }
         public int CargoRequirement { get; set; }
         public float PowerUsage { get; set; }
         public int CloakChargeTime { get; set; }
@@ -19,12 +15,8 @@ namespace DSCore.Ini
         public Dictionary<string, int> FuelRequirements { get; set; }
     }
 
-    public sealed class CloakDisrupter
+    public sealed class CloakDisrupter : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Infocard { get; set; }
-        public uint Name { get; set; }
         public int Range { get; set; }
         public int CooldownTime { get; set; }
         public Dictionary<string, int> AmmoRequirements { get; set; }

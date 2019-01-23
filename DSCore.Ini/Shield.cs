@@ -2,12 +2,8 @@
 
 namespace DSCore.Ini
 {
-    public sealed class Shield
+    public sealed class Shield : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Name { get; set; }
-        public uint Infocard { get; set; }
         public float Hitpoints { get; set; }
         public ShieldType ShieldType { get; set; }
         public float RegenRate { get; set; }

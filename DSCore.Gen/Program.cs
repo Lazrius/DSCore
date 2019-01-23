@@ -780,15 +780,22 @@ namespace DSCore.Gen
                             }
                         }
 
-                        if (cloaks.Any(x => x.Nickname == tempCloakingDevice.Nickname))
-                            cloaks = cloaks.Where(x => x.Nickname == tempCloakingDevice.Nickname).Select(x =>
-                            {
-                                x.Name = tempCloakingDevice.Name;
-                                x.Infocard = tempCloakingDevice.Infocard;
-                                x.PowerUsage = tempCloakingDevice.PowerUsage;
-                                x.CargoRequirement = tempCloakingDevice.CargoRequirement;
-                                return x;
-                            }).ToList();
+                        try
+                        {
+                            int index = cloaks.FindIndex(m => m.Nickname == tempCloakingDevice.Nickname);
+                            CloakingDevice cloak = cloaks[index];
+                            cloak.CargoRequirement = tempCloakingDevice.CargoRequirement;
+                            cloak.PowerUsage = tempCloakingDevice.PowerUsage;
+                            cloak.Name = tempCloakingDevice.Name;
+                            cloak.Infocard = tempCloakingDevice.Infocard;
+                            cloaks[index] = cloak;
+                        }
+
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error trying to load cloak. Message: " + ex.Message);
+                        }
+
                         break;
                     case "gun":
                         Weapon weapon = new Weapon();

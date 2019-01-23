@@ -5,12 +5,8 @@ using LiteDB;
 
 namespace DSCore.Ini
 {
-    public sealed class CountermeasureDropper
+    public sealed class CountermeasureDropper : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Name { get; set; }
-        public uint Infocard { get; set; }
         public float Hitpoints { get; set; }
         public float AutoDeploymentRange { get; set; }
         public string ArchtypeName { get; set; }

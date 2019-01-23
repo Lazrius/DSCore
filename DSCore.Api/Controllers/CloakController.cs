@@ -21,7 +21,7 @@ namespace DSCore.Api.Controllers
 
             using (var db = new LiteDatabase(Utils.GetDatabase()))
             {
-                var collection = db.GetCollection<CloakController>("Cloaks");
+                var collection = db.GetCollection<CloakingDevice>("Cloaks");
                 if (collection.Count() == 0)
                     return Utils.ReturnJson(null, Errors.InvalidDatabaseStructure);
 

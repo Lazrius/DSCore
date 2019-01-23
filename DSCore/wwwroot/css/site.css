@@ -1,21 +1,7 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
+﻿a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
-}
-
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
 }
 
 .border-top {
@@ -34,23 +20,114 @@ button.accept-policy {
   line-height: inherit;
 }
 
+.navbar-top {
+    background-color: rgb(19, 19, 19);
+    border-bottom: 1.2px solid transparent;
+}
+
+#nav-trans {
+    z-index: 9999;
+    width: 100%;
+    border-bottom: 1px;
+    border-style: solid;
+    border-color: #2d3139;
+    border-radius: 0px 0px 4px 4px;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    background-color: rgb(32, 32, 32);
+    background-image: url(../background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: rgb(224, 224, 224);
+    font: normal .85em arial, helvetica, sans-serif;
+    height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-color: transparent;
+    color: #EEE;
+    font-family: "Segoe UI", "Open Sans", sans-serif;
 }
+
+.window {
+    margin: 2em auto;
+    min-width: 28em;
+    max-width: 60em; 
+    min-height: 12em;
+    border: .5em solid transparent;
+    background:
+              url(corners.svg#top-left) top left/14em no-repeat border-box,
+              url(corners.svg#top-right) top right/14em no-repeat border-box,
+              url(corners.svg#bottom-left) bottom left/14em no-repeat border-box,
+              url(corners.svg#bottom-right) bottom right/14em no-repeat border-box,
+              url(corners.svg#top) top/100% 14em no-repeat padding-box,
+              url(corners.svg#right) right/14em 100% no-repeat padding-box,
+              url(corners.svg#bottom) bottom/100% 14em no-repeat padding-box,
+              url(corners.svg#left) left/14em 100% no-repeat padding-box,
+              rgba(16, 4, 24, .75) padding-box;
+    padding: 1.75em;
+    transition: max-width 1s;
+}
+
+a {
+    color: #87C3E0;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+h1, .h1, h2, .h2 {
+    font-family: Agency FB, Abel, sans-serif;
+}
+
+.window.short {
+    max-width: 30em;
+}
+
+.window > h2 {
+    text-align: center;
+    margin-top: -1em;
+}
+
+.window > :first-child {
+    margin-top: 0;
+}
+
+.window > :last-child {
+    margin-bottom: 0;
+}
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #87c3e0 top left repeat-x;
+    -webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar-track {
+    background: #2c2c2c;
+    -webkit-box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+::-webkit-scrollbar {
+    width: 12px;
 }

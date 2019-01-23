@@ -5,12 +5,8 @@ using LiteDB;
 
 namespace DSCore.Ini
 {
-    public sealed class Weapon
+    public sealed class Weapon : Good
     {
-        [BsonId]
-        public string Nickname { get; set; }
-        public uint Name { get; set; }
-        public uint Infocard { get; set; }
         public float Hitpoints { get; set; }
         public float PowerUsage { get; set; }
         public float RefireDelay { get; set; }
@@ -20,11 +16,8 @@ namespace DSCore.Ini
         public Munition Munition { get; set; }
     }
 
-    public sealed class Munition
+    public sealed class Munition : Good
     {
-        public string Nickname { get; set; }
-        public uint Name { get; set; }
-        public uint Infocard { get; set; }
         public bool IsSeeking { get; set; }
         public bool IsCruiseDistupter { get; set; }
         public float TimeToLock { get; set; }
