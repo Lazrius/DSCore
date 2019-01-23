@@ -9,10 +9,68 @@
     <p>Your one stop shop for everything <a href="https://discoverygc.com">Discovery</a>.</p>
 
     <div class="window">
-        <h2>Commodities</h2><br /><br />
-        @foreach (Commodity commodity in ViewData.Model)
-        {
-            
-        }
+        <h2>Commodities</h2>
+        <br />
+        <table>
+            <thead>
+                <tr>
+                    <td id="name-head">
+                        <div class="thead-cell">
+                            <span>Name</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                    <td id="price-head">
+                        <div class="thead-cell">
+                            <span>Price</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                    <td id="volume-head">
+                        <div class="thead-cell">
+                            <span>Volume</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                    <td id="goodbadbuy-head">
+                        <div class="thead-cell">
+                            <span>Good/Bad Buy Price</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                    <td id="goodbadsell-head">
+                        <div class="thead-cell">
+                            <span>Good/Bad Sell Price</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                    <td id="combine-head">
+                        <div class="thead-cell">
+                            <span>Combinable</span>
+                            <div class="button.btn-sort.sort-up.name"></div>
+                            <div class="button.btn-sort.sort-down.name"></div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Commodity commodity in ViewData.Model)
+                {
+                    <tr>
+                        <td>@commodity.Name</td>
+                        <td>@commodity.Price</td>
+                        <td>@commodity.CargoSpaceRequired</td>
+                        <td>@commodity.GoodBuyPrice / @commodity.BadBuyPrice</td>
+                        <td>@commodity.GoodSellPrice / @commodity.BadSellPrice</td>
+                        <td>@(commodity.Combinable ? "Yes" : "No")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
