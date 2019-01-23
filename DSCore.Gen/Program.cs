@@ -531,7 +531,7 @@ namespace DSCore.Gen
                                 case "hit_pts":
                                     dropper.Hitpoints = Convert.ToSingle(ii.Value);
                                     break;
-                                case "projectile_archtype":
+                                case "projectile_archetype":
                                     dropper.ArchtypeName = ii.Value;
                                     break;
                             }
@@ -565,13 +565,21 @@ namespace DSCore.Gen
 
             Console.WriteLine("Processed Scanners, Powerplants, and CMs.");
 
-            // We need to iterate over the list and assign the subclasses
             foreach (Countermeasure i in tempcmlist)
-                droppers = droppers.Where(x => x.ArchtypeName == i.Nickname).Select(x =>
+            {
+                try
                 {
-                    x.Ammo = i;
-                    return x;
-                }).ToList();
+                    int index = droppers.FindIndex(m => m.ArchtypeName == i.Nickname);
+                    CountermeasureDropper dropper = droppers[index];
+                    dropper.Ammo = i;
+                    droppers[index] = dropper;
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error trying to load CM. Message: " + ex.Message);
+                }
+            }
             tempcmlist = null;
 
             // Factions
@@ -690,7 +698,7 @@ namespace DSCore.Gen
             {
                 switch (i.Name.ToLower())
                 {
-                    case "group":
+                    case "ship":
                         Ship ship = new Ship();
                         foreach (var ii in i.Keys)
                         {
@@ -739,7 +747,6 @@ namespace DSCore.Gen
             // Weapons
             ini = new IniFile(iniOptions);
             ini.Load(equip + @"\weapon_equip.ini");
-            List<Weapon> tempGuns = new List<Weapon>();
             List<Munition> tempMunitions = new List<Munition>();
             List<Explosion> tempExplosions = new List<Explosion>();
 
@@ -807,7 +814,7 @@ namespace DSCore.Gen
                                 case "hit_pts":
                                     weapon.Hitpoints = Convert.ToSingle(ii.Value);
                                     break;
-                                case "projectile_archtype":
+                                case "projectile_archetype":
                                     weapon.MunitionArchtype = ii.Value;
                                     break;
                                 case "refire_delay":
@@ -819,7 +826,7 @@ namespace DSCore.Gen
                             }
                         }
 
-                        tempGuns.Add(weapon);
+                        weapons.Add(weapon);
                         break;
                     case "munition":
                         Munition munition = new Munition();
@@ -927,18 +934,36 @@ namespace DSCore.Gen
             }
 
             foreach (Explosion i in tempExplosions)
-                tempMunitions = tempMunitions.Where(x => x.ExplosionArchtype == i.Nickname).Select(x =>
+            {
+                try
                 {
-                    x.Explosion = i;
-                    return x;
-                }).ToList();
+                    int index = tempMunitions.FindIndex(m => m.ExplosionArchtype == i.Nickname);
+                    Munition mun = tempMunitions[index];
+                    mun.Explosion = i;
+                    tempMunitions[index] = mun;
+                }
 
-            foreach (Munition i in tempMunitions)
-                weapons = tempGuns.Where(x => x.MunitionArchtype == i.Nickname).Select(x =>
+                catch (Exception ex)
                 {
-                    x.Munition = i;
-                    return x;
-                }).ToList();
+                    Console.WriteLine("Error trying to load explosions. Message: " + ex.Message);
+                }
+            }
+                
+            foreach (Munition i in tempMunitions)
+            {
+                try
+                {
+                    int index = weapons.FindIndex(m => m.MunitionArchtype == i.Nickname);
+                    Weapon weapon = weapons[index];
+                    weapon.Munition = i;
+                    weapons[index] = weapon;
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error trying to load munitions. Message: " + ex.Message);
+                }
+            }
 
             Console.WriteLine("Processed Weapons.");
             Console.WriteLine();
@@ -1014,22 +1039,29 @@ namespace DSCore.Gen
                 Console.WriteLine("Random Infocard: " + i.FindAll().Skip(new Random().Next(0, i.Count())).Take(1).First().Value);
                 Console.WriteLine("Random Infocard: " + i.FindAll().Skip(new Random().Next(0, i.Count())).Take(1).First().Value);
                 Console.WriteLine();
+
+                var w = db.GetCollection<Weapon>("Weapons");
+                Console.WriteLine($"Weapon Count: {w.Count()}");
+                Console.WriteLine("Random Weapon: " + w.FindAll().Skip(new Random().Next(0, w.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Weapon: " + w.FindAll().Skip(new Random().Next(0, w.Count())).Take(1).First().Nickname);
+                Console.WriteLine("Random Weapon: " + w.FindAll().Skip(new Random().Next(0, w.Count())).Take(1).First().Nickname);
+                Console.WriteLine();
                 Console.ReadLine();
             }
         }
 
         static void InsertToDatabase<T>(LiteCollection<T> collection, List<T> list, string name)
         {
-            int i = 0;
+            int i = 0, ii = 0;
             foreach (T x in list)
             {
                 try
                 {
                     collection.Insert(x);
-                    SetProgress(name, i, list.Count);
+                    SetProgress(name, i - ii, list.Count);
                     i++;
                 }
-                catch (Exception) { }
+                catch (Exception) { ii--; }
             }
         }
 
