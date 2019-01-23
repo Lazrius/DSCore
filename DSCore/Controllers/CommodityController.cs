@@ -22,16 +22,18 @@ namespace DSCore.Controllers
             {
                 string jsonString = webClient.DownloadString("https://localhost:3080/api/commodity");
                 JsonWrapper jsonObject = JsonConvert.DeserializeObject<JsonWrapper>(jsonString);
-                List<Commodity> commodities = (List<Commodity>) jsonObject.Result;
+                Commodity[] commodities = JsonConvert.DeserializeObject<Commodity[]>(jsonObject.Result.ToString());
 
                 string jsonGoods = webClient.DownloadString("https://localhost:3080/api/good");
                 JsonWrapper jsonGoodsObject = JsonConvert.DeserializeObject<JsonWrapper>(jsonGoods);
-                List<Good> goods = (List<Good>)jsonGoodsObject.Result;
+                Good[] goods = JsonConvert.DeserializeObject<Good[]>(jsonGoodsObject.Result.ToString());
 
-                for (var index = 0; index < commodities.Count; index++)
+                for (var index = 0; index < commodities.Length; index++)
                 {
                     Commodity i = commodities[index];
-                    Good good = goods.Find(g => g.Equipment == i.Nickname);
+                    Good good = Array.Find(goods, g => g.Equipment == i.Nickname);
+                    if (good == null)
+                        continue;
                     i.Price = good.Price;
                     i.BadBuyPrice = good.BadSellPrice;
                     i.Combinable = good.Combinable;

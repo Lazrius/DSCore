@@ -44,7 +44,7 @@ $(window).scroll(function() {scroll = true});
 setInterval(function() {
         if(scroll === true) {
             scroll = false;
-            if ($(window).scrollTop() > 1) {
+            if ($(window).scrollTop() > 100) {
                 if (!scrolled) {
                     transition();
                 }
@@ -54,4 +54,4 @@ setInterval(function() {
                 }
             }
         }
-    }, 1)
+    }, 100)

@@ -44,13 +44,14 @@
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+        <footer class="border-top footer text-muted" style="border-top: 1px solid transparent !important">
+            <div class="container">
+                &copy; 2019 - DSCore <div style="float: right;">Created by Laz, with design assistance from Treewyrm.</div>
+            </div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted" style="border-top: 1px solid transparent !important">
-        <div class="container">
-            &copy; 2019 - DSCore <div style="float: right;">Created by Laz, with design assistance from Treewyrm.</div>
-        </div>
-    </footer>
+    
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -70,7 +71,7 @@
                 integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=">
         </script>
     </environment>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/navbar.js" asp-append-version="true"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
