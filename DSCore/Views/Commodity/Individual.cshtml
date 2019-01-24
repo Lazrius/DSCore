@@ -1,8 +1,9 @@
-﻿@using DSCore.Ini
+﻿@using System.Text.RegularExpressions
+@using DSCore.Ini
 @model Commodity
 @{
-    KeyValuePair<string, string> Infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
-    ViewData["Title"] = Infocard.Key;
+    KeyValuePair<string, string> infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
+    ViewData["Title"] = infocard.Key;
 }
 
 
@@ -10,13 +11,34 @@
 <div class="text-center">
     <div class="window">
         <h2>@ViewData["Title"]</h2>
+        <br/>
+        <br/>
+        <h1>TODO: Add icon</h1>
 
-        @{ 
-            string desc = Infocard.Value;
-            desc = desc.Replace("<PARA/>", "<br/>");
-            desc = desc.Replace("<TEXT>", "<p>");
-            desc = desc.Replace("</TEXT>", "</p>");
-        }
-        @desc
+        @Html.Raw(infocard.Value)
     </div>
+    
+    <div class="window">
+        <table id="tbl">
+            <tbody>
+            <tr>
+                <td>@infocard.Key</td>
+                <td>@Model.Nickname</td>
+                <td>@Model.Price</td>
+                <td>@Model.GoodBuyPrice / @Model.BadBuyPrice</td>
+                <td>@Model.GoodSellPrice / @Model.BadSellPrice</td>
+                <td>@(Model.DecayRate != 0 ? ((Int32) Model.Hitpoints % Model.DecayRate).ToString() : "Not Perishable")</td>
+            </tr>
+            </tbody>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <h1>TODO: Setup base sell points</h1>
+    </div>
+    
 </div>

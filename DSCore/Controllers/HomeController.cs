@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DSCore.Models;
-using DSCore.Utils;
+using DSCore.Utilities;
 
 namespace DSCore.Controllers
 {

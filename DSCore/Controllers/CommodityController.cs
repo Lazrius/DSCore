@@ -4,12 +4,13 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DSCore.Api;
 using DSCore.Ini;
 using Microsoft.AspNetCore.Mvc;
 using DSCore.Models;
-using DSCore.Utils;
+using DSCore.Utilities;
 using Newtonsoft.Json;
 
 namespace DSCore.Controllers
@@ -20,9 +21,9 @@ namespace DSCore.Controllers
         public IActionResult Index()
         {
 
-            List<Commodity> commodities = API.GetAPIResponse<Commodity[]>(API.Endpoints.commodity.ToString()).ToList();
-            Good[] goods = API.GetAPIResponse<Good[]>(API.Endpoints.good.ToString());
-            Infocard[] infocards = API.GetAPIResponse<Infocard[]>(API.Endpoints.infocard.ToString());
+            List<Commodity> commodities = Utils.GetAPIResponse<Commodity[]>(Utils.Endpoints.commodity.ToString()).ToList();
+            Good[] goods = Utils.GetAPIResponse<Good[]>(Utils.Endpoints.good.ToString());
+            Infocard[] infocards = Utils.GetAPIResponse<Infocard[]>(Utils.Endpoints.infocard.ToString());
             Dictionary<uint, string> infocardPairs = new Dictionary<uint, string>();
 
             for (var index = 0; index < commodities.Count; index++)
@@ -42,6 +43,8 @@ namespace DSCore.Controllers
                 i.BadSellPrice = good.BadSellPrice;
                 i.GoodBuyPrice = good.GoodBuyPrice;
                 Infocard info = Array.Find(infocards, a => a.Key == i.Name);
+                if (info == null)
+                    continue;
                 infocardPairs[info.Key] = info.Value;
                 commodities[index] = i;
             }
@@ -54,11 +57,12 @@ namespace DSCore.Controllers
         [HttpGet("{nickname}")]
         public IActionResult Index(string nickname)
         {
-            Commodity commodity = API.GetAPIResponse<Commodity>(API.Endpoints.commodity.ToString() + "/" + nickname);
-            Good good = API.GetAPIResponse<Good>(API.Endpoints.good.ToString() + "/" + nickname);
-            KeyValuePair<string, string> infocard = new KeyValuePair<string, string>(
-                API.GetAPIResponse<string>(API.Endpoints.infocard.ToString() + "/" + commodity.Name),
-                API.GetAPIResponse<string>(API.Endpoints.infocard.ToString() + "/" + commodity.Infocard));
+            Commodity commodity = Utils.GetAPIResponse<Commodity>(Utils.Endpoints.commodity + "/" + nickname);
+            Good good = Utils.GetAPIResponse<Good>(Utils.Endpoints.good + "/" + nickname);
+            string i = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + commodity.Name).Value;
+            string ii = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + commodity.Infocard).Value;
+            ii = Utils.XmlToHtml(ii);
+            KeyValuePair<string, string> infocard = new KeyValuePair<string, string>(i, ii);
 
             commodity.Price = good.Price;
             commodity.BadBuyPrice = good.BadSellPrice;
@@ -68,7 +72,7 @@ namespace DSCore.Controllers
             commodity.GoodBuyPrice = good.GoodBuyPrice;
 
             ViewBag.Infocard = infocard;
-            return View(commodity);
+            return View("Individual", commodity);
         }
     }
 }

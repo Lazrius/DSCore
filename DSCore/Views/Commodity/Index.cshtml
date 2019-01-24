@@ -61,12 +61,13 @@
                 @foreach (Commodity commodity in ViewData.Model)
                 {
                     <tr>
-                        <td>@{ string value;
+                        <td>
+                            @{ string value;
                                 Infocards.TryGetValue(commodity.Name, out value);
                                 if (string.IsNullOrEmpty(value))
                                     { value = "DatabaseError"; }
                             }
-                        @value
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{commodity.Nickname}")"> @value </a>
                         </td>
                         <td>@commodity.Price</td>
                         <td>@commodity.CargoSpaceRequired</td>

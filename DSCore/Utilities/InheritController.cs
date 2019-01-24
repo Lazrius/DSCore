@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using DSCore.Models;
 
-namespace DSCore.Utils
+namespace DSCore.Utilities
 {
     public class InheritController : Controller
     {
