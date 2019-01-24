@@ -1,0 +1,22 @@
+﻿@using DSCore.Ini
+@model Commodity
+@{
+    KeyValuePair<string, string> Infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
+    ViewData["Title"] = Infocard.Key;
+}
+
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+
+        @{ 
+            string desc = Infocard.Value;
+            desc = desc.Replace("<PARA/>", "<br/>");
+            desc = desc.Replace("<TEXT>", "<p>");
+            desc = desc.Replace("</TEXT>", "</p>");
+        }
+        @desc
+    </div>
+</div>

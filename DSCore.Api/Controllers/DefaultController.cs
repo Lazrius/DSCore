@@ -11,16 +11,22 @@ using Newtonsoft.Json;
 
 namespace DSCore.Api.Controllers
 {
-    [Route("api")]
     [ApiController]
-    public class DefaultController : ControllerBase
+    public class DefaultController : Controller
     {
-        // GET api/
+        [Route("")]
         [HttpGet]
-        public ActionResult<string> Get(string nickname)
+        public ActionResult<string> Index()
         {
-            this.HttpContext.Response.StatusCode = 200;
-            return "Hi. This is a test page!";
+            return Content("Hi, I'm a test string.");
+        }
+
+        [Route("api")]
+        [HttpGet]
+        public ActionResult Redirect()
+        {
+            Response.Redirect("https://localhost:3081/api");
+            return new EmptyResult(); 
         }
     }
 }

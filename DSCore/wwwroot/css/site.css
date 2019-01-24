@@ -26,12 +26,31 @@ button.accept-policy {
 }
 
 #nav-trans {
+    position: fixed;
     z-index: 9999;
     width: 100%;
+    left: 50%;
+    top: 2.5%;
+    transform: translate(-50%, -50%);
     border-bottom: 1px;
     border-style: solid;
     border-color: #2d3139;
     border-radius: 0px 0px 4px 4px;
+    max-width: 100%;
+}
+
+.navbar-nav ul li a {
+    list-style: none;
+    display: inline;
+}
+
+ul li a:after {
+    content: "•";
+    padding-left: 1rem;
+}
+
+ul li:last-child a:after {
+    content: none;
 }
 
 /* Sticky footer styles
@@ -108,8 +127,7 @@ h1, .h1, h2, .h2 {
 
 .footer {
     position: absolute;
-    bottom: 0;
-    width: 100%;
+    width: 55%;
     white-space: nowrap;
     /* Set the fixed height of the footer here */
     height: 60px;
@@ -130,4 +148,82 @@ h1, .h1, h2, .h2 {
 
 ::-webkit-scrollbar {
     width: 12px;
+}
+
+/* Grids and stuff */
+
+.btn-sort.sort-up,
+.btn-sort.sort-down {
+    border: 1px transparent solid;
+    color: #00cffe;
+    background: transparent;
+    outline: none;
+    border-radius: 100%;
+    line-height: 2.2em;
+    font-weight: bold;
+    font-size: 0.6em;
+    margin: 0 0.2em;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out, border 0.3s ease-in-out;
+}
+
+.btn-sort.sort-up:hover,
+.btn-sort.sort-down:hover {
+    border: 1px #00cffe solid;
+}
+
+.btn-sort.sort-up:focus,
+.btn-sort.sort-down:focus,
+.btn-sort.sort-up.active,
+.btn-sort.sort-down.active {
+    background: #00cffe;
+    color: #333;
+    outline: none;
+}
+
+.btn-sort.sort-up:after {
+    content: '⬆';
+}
+
+.btn-sort.sort-down:after {
+    content: '⬇';
+}
+
+table {
+    width: 100%;
+    padding: 2em;
+    color: #aaa;
+}
+
+table thead {
+    font-weight: bold;
+    font-size: 0.8em;
+    color: #828282;
+}
+
+table td {
+    padding: 0.1em 0.5em;
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+table .thead-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+table .thead-cell span {
+    flex: 5;
+}
+
+.region:before {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding-right: 10px;
+    font-weight: bold;
+    user-select: none;
+    width: 25px;
 }

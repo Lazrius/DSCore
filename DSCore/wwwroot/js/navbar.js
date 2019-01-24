@@ -12,7 +12,6 @@
 
 function firstRun() {
     nav.css({
-        "position": "fixed",
         "-webkit-transition": "background-color 0.5s linear, border-color 0.5s linear",
         "-moz-transition": "background-color 0.5s linear, border-color 0.5s linear",
         "-ms-transition": "background-color 0.5s linear, border-color 0.5s linear",
