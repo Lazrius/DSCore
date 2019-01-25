@@ -19,6 +19,7 @@ namespace DSCore.Api
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("https://localhost:3080")
                 .UseStartup<Startup>();
     }
 }
