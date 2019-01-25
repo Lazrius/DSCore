@@ -1,0 +1,99 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<Weapon>
+@{
+    ViewData["Title"] = "Weapons";
+    Dictionary<uint, string> Infocards = (Dictionary<uint, string>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br/>
+        <table id="tbl">
+            <thead align="center">
+                <tr>
+                    <td id="name-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Name</span></a>
+                        </div>
+                    </td>
+                    <td id="price-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td id="type-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Type</span></a>
+                        </div>
+                    </td>
+                    <td id="hull-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Hull Damage</span></a>
+                        </div>
+                    </td>
+                    <td id="shield-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Shield Damage</span></a>
+                        </div>
+                    </td>
+                    <td id="energy-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Energy Damage</span></a>
+                        </div>
+                    </td>
+                    <td id="turn-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Turn Rate</span></a>
+                        </div>
+                    </td>
+                    <td id="power-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Power Consumption</span></a>
+                        </div>
+                    </td>
+                    <td id="ori-head">
+                        <div class="thead-cell">
+                            <a href="#"><span>Has Forced Orientation</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Weapon weapon in ViewData.Model)
+                {
+                <tr>
+                    <td>
+                        @{  float explosionShield = 0, explosionHull = 0, explosionRadius = 0;
+                            string value;
+                            Infocards.TryGetValue(weapon.Name, out value);
+                            if (string.IsNullOrEmpty(value))
+                            { value = "DatabaseError"; }
+                            if (weapon.Munition == null)
+                            { continue; }
+                            if (weapon.Munition.Explosion != null)
+                            {
+                                explosionHull = weapon.Munition.Explosion.HullDamage;
+                                explosionShield = weapon.Munition.Explosion.EnergyDamage;
+                                explosionRadius = weapon.Munition.Explosion.Radius;
+                            }
+                        }
+                        <a href="@($"{ViewContext.HttpContext.Request.Path}/{weapon.Nickname}")"> @value </a>
+                    </td>
+                    <td>@weapon.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                    <td>@(value.ToLower().Contains("nomad") ? "Nomad" : weapon.Munition.Explosion == null ? TypeFunctions.EnumToString(weapon.Munition.WeaponType) : "Explosive")</td>
+                    <td>@((weapon.Munition.HullDamage + explosionHull).ToString("N0")) @(explosionRadius == 0 ? null : Html.Raw("(" + explosionRadius + " m radius)"))</td>
+                    <td>@((weapon.Munition.ShieldDamage + weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
+                    <td>@((weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
+                    <td>@weapon.TurnRate</td>
+                    <td>@weapon.PowerUsage</td>
+                    <td>@(weapon.Munition.HasForcedOrientation ? "Yes" : "No")</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--<script src="~/js/grids.js"></script>-->

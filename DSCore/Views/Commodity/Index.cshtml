@@ -1,4 +1,5 @@
 ﻿@using DSCore.Ini
+@using System.Globalization
 @model List<Commodity>
 @{
     ViewData["Title"] = "Commodities";
@@ -8,7 +9,7 @@
 
 <div class="text-center">
     <div class="window">
-        <h2>Commodities</h2>
+        <h2>@ViewData["Title"]</h2>
         <br />
         <table id="tbl">
             <thead>
@@ -16,43 +17,31 @@
                     <td id="name-head">
                         <div class="thead-cell">
                             <span>Name</span>
-                            <button class="button.btn-sort.sort-up.name"></button>
-                            <button class="button.btn-sort.sort-down.name"></button>
                         </div>
                     </td>
                     <td id="price-head">
                         <div class="thead-cell">
                             <span>Price</span>
-                            <button class="button.btn-sort.sort-up.price"></button>
-                            <button class="button.btn-sort.sort-down.price"></button>
                         </div>
                     </td>
                     <td id="volume-head">
                         <div class="thead-cell">
                             <span>Volume</span>
-                            <button class="button.btn-sort.sort-up.volume"></button>
-                            <button class="button.btn-sort.sort-down.volume"></button>
                         </div>
                     </td>
                     <td id="goodbadbuy-head">
                         <div class="thead-cell">
                             <span>Good/Bad Buy Price</span>
-                            <button class="button.btn-sort.sort-up.name"></button>
-                            <button class="button.btn-sort.sort-down.name"></button>
                         </div>
                     </td>
                     <td id="goodbadsell-head">
                         <div class="thead-cell">
                             <span>Good/Bad Sell Price</span>
-                            <button class="button.btn-sort.sort-up.name"></button>
-                            <button class="button.btn-sort.sort-down.name"></button>
                         </div>
                     </td>
                     <td id="combine-head">
                         <div class="thead-cell">
                             <span>Combinable</span>
-                            <button class="button.btn-sort.sort-up.name"></button>
-                            <button class="button.btn-sort.sort-down.name"></button>
                         </div>
                     </td>
                 </tr>
@@ -69,7 +58,7 @@
                             }
                             <a href="@($"{ViewContext.HttpContext.Request.Path}/{commodity.Nickname}")"> @value </a>
                         </td>
-                        <td>@commodity.Price</td>
+                        <td>@commodity.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
                         <td>@commodity.CargoSpaceRequired</td>
                         <td>@commodity.GoodBuyPrice / @commodity.BadBuyPrice</td>
                         <td>@commodity.GoodSellPrice / @commodity.BadSellPrice</td>

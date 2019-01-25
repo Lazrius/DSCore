@@ -16,23 +16,23 @@ using Newtonsoft.Json;
 namespace DSCore.Controllers
 {
     [Route("[controller]")]
-    public class CommodityController : InheritController
+    public class WeaponController : InheritController
     {
         public IActionResult Index()
         {
 
-            List<Commodity> commodities = Utils.GetAPIResponse<Commodity[]>(Utils.Endpoints.commodity.ToString()).ToList();
+            List<Weapon> weapons = Utils.GetAPIResponse<Weapon[]>(Utils.Endpoints.weapon.ToString()).ToList();
             Good[] goods = Utils.GetAPIResponse<Good[]>(Utils.Endpoints.good.ToString());
             Infocard[] infocards = Utils.GetAPIResponse<Infocard[]>(Utils.Endpoints.infocard.ToString());
             Dictionary<uint, string> infocardPairs = new Dictionary<uint, string>();
 
-            for (var index = 0; index < commodities.Count; index++)
+            for (var index = 0; index < weapons.Count; index++)
             {
-                Commodity i = commodities[index];
+                Weapon i = weapons[index];
                 Good good = Array.Find(goods, g => g.Equipment == i.Nickname);
                 if (good == null)
                 {
-                    commodities.RemoveAt(index);
+                    weapons.RemoveAt(index);
                     index--;
                     continue;
                 }
@@ -46,33 +46,33 @@ namespace DSCore.Controllers
                 if (info == null)
                     continue;
                 infocardPairs[info.Key] = info.Value;
-                commodities[index] = i;
+                weapons[index] = i;
             }
 
             ViewBag.Infocards = infocardPairs;
-            return View(commodities);
+            return View(weapons);
 
         }
 
         [HttpGet("{nickname}")]
         public IActionResult Individual(string nickname)
         {
-            Commodity commodity = Utils.GetAPIResponse<Commodity>(Utils.Endpoints.commodity + "/" + nickname);
+            Weapon weapon = Utils.GetAPIResponse<Weapon>(Utils.Endpoints.weapon + "/" + nickname);
             Good good = Utils.GetAPIResponse<Good>(Utils.Endpoints.good + "/" + nickname);
-            string i = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + commodity.Name).Value;
-            string ii = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + commodity.Infocard).Value;
+            string i = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + weapon.Name).Value;
+            string ii = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + weapon.Infocard).Value;
             ii = Utils.XmlToHtml(ii);
             KeyValuePair<string, string> infocard = new KeyValuePair<string, string>(i, ii);
 
-            commodity.Price = good.Price;
-            commodity.BadBuyPrice = good.BadSellPrice;
-            commodity.Combinable = good.Combinable;
-            commodity.GoodSellPrice = good.GoodSellPrice;
-            commodity.BadSellPrice = good.BadSellPrice;
-            commodity.GoodBuyPrice = good.GoodBuyPrice;
+            weapon.Price = good.Price;
+            weapon.BadBuyPrice = good.BadSellPrice;
+            weapon.Combinable = good.Combinable;
+            weapon.GoodSellPrice = good.GoodSellPrice;
+            weapon.BadSellPrice = good.BadSellPrice;
+            weapon.GoodBuyPrice = good.GoodBuyPrice;
 
             ViewBag.Infocard = infocard;
-            return View("Individual", commodity);
+            return View("Individual", weapon);
         }
     }
 }

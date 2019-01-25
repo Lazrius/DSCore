@@ -25,6 +25,7 @@ namespace DSCore.Ini
         public float Lifetime { get; set; }
         public float HullDamage { get; set; }
         public float ShieldDamage { get; set; }
+        public float EnegryDamage { get; set; }
         public float Volume { get; set; }
         public int AmmoLimit { get; set; }
         public bool RequiresAmmo { get; set; }
@@ -57,6 +58,7 @@ namespace DSCore.Ini
         Healing,
         Neutral,
         Piercing,
-        Resisted
+        Resisted,
+        Explosive,
     }
 }

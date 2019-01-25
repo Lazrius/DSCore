@@ -77,7 +77,7 @@ body {
 .window {
     margin: 2em auto;
     min-width: 28em;
-    max-width: 60em; 
+    max-width: 70em; 
     min-height: 12em;
     border: .5em solid transparent;
     background:
@@ -108,8 +108,13 @@ h1, .h1, h2, .h2 {
     font-family: Agency FB, Abel, sans-serif;
 }
 
-.window.short {
+.window-short {
     max-width: 30em;
+}
+
+.window-cell {
+    display: table-cell;
+    width: 600px
 }
 
 .window > h2 {
@@ -209,13 +214,8 @@ table td {
 }
 
 table .thead-cell {
-    display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-table .thead-cell span {
-    flex: 5;
 }
 
 .region:before {

@@ -422,7 +422,7 @@ namespace DSCore.Gen
                                     shield.Infocard = Convert.ToUInt32(ii.Value);
                                     break;
                                 case "shield_type":
-                                    shield.ShieldType = GetShieldType(ii.Value);
+                                    shield.ShieldType = TypeFunctions.GetShieldType(ii.Value);
                                     break;
                                 case "hit_pts":
                                     shield.Hitpoints = Convert.ToSingle(ii.Value);
@@ -892,15 +892,16 @@ namespace DSCore.Gen
                                     break;
                                 case "hull_damage":
                                     munition.HullDamage = Convert.ToSingle(ii.Value);
+                                    munition.ShieldDamage = Convert.ToSingle(ii.Value) * 0.5f;
                                     break;
                                 case "energy_damage":
-                                    munition.ShieldDamage = Convert.ToSingle(ii.Value);
+                                    munition.EnegryDamage = Convert.ToSingle(ii.Value);
                                     break;
                                 case "lifetime":
                                     munition.Lifetime = Convert.ToSingle(ii.Value);
                                     break;
                                 case "weapon_type":
-                                    munition.WeaponType = GetWeaponType(ii.Value);
+                                    munition.WeaponType = TypeFunctions.GetWeaponType(ii.Value);
                                     break;
 
                             }
@@ -1094,48 +1095,6 @@ namespace DSCore.Gen
                 infoList.Add(new Infocard { Key = i.Key, Value = i.Value });
 
             return infoList;
-        }
-
-        static ShieldType GetShieldType(string value)
-        {
-            value = value.ToLower();
-            if (value.Contains("graviton"))
-                return ShieldType.Graviton;
-            else if (value.Contains("molecular"))
-                return ShieldType.Molecular;
-            else if (value.Contains("positron"))
-                return ShieldType.Positron;
-            else if (value.Contains("nomad"))
-                return ShieldType.Nomad;
-            else if (value.Contains("drone"))
-                return ShieldType.Drone;
-            else return ShieldType.Unknown;
-        }
-
-        static WeaponType GetWeaponType(string value)
-        {
-            value = value.ToLower();
-            if (value.Contains("resisted"))
-                return WeaponType.Resisted;
-            else if (value.Contains("plasma"))
-                return WeaponType.Plasma;
-            else if (value.Contains("pulse"))
-                return WeaponType.Pulse;
-            else if (value.Contains("photon"))
-                return WeaponType.Photon;
-            else if (value.Contains("particle"))
-                return WeaponType.Particle;
-            else if (value.Contains("laser"))
-                return WeaponType.Laser;
-            else if (value.Contains("tachyon"))
-                return WeaponType.Tachyon;
-            else if (value.Contains("piercing"))
-                return WeaponType.Piercing;
-            else if (value.Contains("neutron"))
-                return WeaponType.Neutron;
-            else if (value.Contains("healing"))
-                return WeaponType.Healing;
-            return WeaponType.Neutral;
         }
     }
 }
