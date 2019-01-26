@@ -45,6 +45,9 @@ namespace DSCore.Gen
                 SectionDuplicate = IniDuplication.Allowed
             };
 
+            // Markets, Bases, Systems
+            SetupBasesAndSystems(iniOptions, data, out var marketCommodities, out var marketEquipment, out var bases, out var systems);
+
             // Commodities and Armour
             IniFile ini = new IniFile(iniOptions);
             ini.Load(equip + @"\select_equip.ini");
@@ -59,7 +62,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    armour.Nickname = ii.Value;
+                                    armour.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     armour.Name = Convert.ToUInt32(ii.Value);
@@ -86,7 +89,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    commodity.Nickname = ii.Value;
+                                    commodity.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     commodity.Name = Convert.ToUInt32(ii.Value);
@@ -128,7 +131,7 @@ namespace DSCore.Gen
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
-                            good.Nickname = ii.Value;
+                            good.Nickname = ii.Value.ToLower();
                             break;
 
                         case "equipment":
@@ -180,7 +183,7 @@ namespace DSCore.Gen
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
-                            good.Nickname = ii.Value;
+                            good.Nickname = ii.Value.ToLower();
                             break;
 
                         case "equipment":
@@ -230,7 +233,7 @@ namespace DSCore.Gen
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
-                            good.Nickname = ii.Value;
+                            good.Nickname = ii.Value.ToLower();
                             break;
 
                         case "equipment":
@@ -280,7 +283,7 @@ namespace DSCore.Gen
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
-                            good.Nickname = ii.Value;
+                            good.Nickname = ii.Value.ToLower();
                             break;
 
                         case "equipment":
@@ -330,7 +333,7 @@ namespace DSCore.Gen
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
-                            good.Nickname = ii.Value;
+                            good.Nickname = ii.Value.ToLower();
                             break;
 
                         case "equipment":
@@ -383,7 +386,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    thruster.Nickname = ii.Value;
+                                    thruster.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     thruster.Name = Convert.ToUInt32(ii.Value);
@@ -413,7 +416,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    shield.Nickname = ii.Value;
+                                    shield.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     shield.Name = Convert.ToUInt32(ii.Value);
@@ -464,7 +467,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    power.Nickname = ii.Value;
+                                    power.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     power.Name = Convert.ToUInt32(ii.Value);
@@ -490,7 +493,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    scanner.Nickname = ii.Value;
+                                    scanner.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     scanner.Name = Convert.ToUInt32(ii.Value);
@@ -517,7 +520,7 @@ namespace DSCore.Gen
                             switch (ii.Name.ToLower())
                             {
                                 case "nickname":
-                                    dropper.Nickname = ii.Value;
+                                    dropper.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     dropper.Name = Convert.ToUInt32(ii.Value);
@@ -532,7 +535,7 @@ namespace DSCore.Gen
                                     dropper.Hitpoints = Convert.ToSingle(ii.Value);
                                     break;
                                 case "projectile_archetype":
-                                    dropper.ArchtypeName = ii.Value;
+                                    dropper.ArchtypeName = ii.Value.ToLower();
                                     break;
                             }
                         }
@@ -547,7 +550,7 @@ namespace DSCore.Gen
                             switch (ii.Name.ToLower())
                             {
                                 case "nickname":
-                                    cm.Nickname = ii.Value;
+                                    cm.Nickname = ii.Value.ToLower();
                                     break;
                                 case "range":
                                     cm.EffectiveRange = Convert.ToInt32(ii.Value);
@@ -569,7 +572,7 @@ namespace DSCore.Gen
             {
                 try
                 {
-                    int index = droppers.FindIndex(m => m.ArchtypeName == i.Nickname);
+                    int index = droppers.FindIndex(m => m.ArchtypeName.ToLower() == i.Nickname.ToLower());
                     CountermeasureDropper dropper = droppers[index];
                     dropper.Ammo = i;
                     droppers[index] = dropper;
@@ -597,7 +600,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    faction.Nickname = ii.Value;
+                                    faction.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     faction.Name = Convert.ToUInt32(ii.Value);
@@ -639,7 +642,7 @@ namespace DSCore.Gen
                                 switch (ii.Name)
                                 {
                                     case "nickname":
-                                        cloak.Nickname = ii.Value;
+                                        cloak.Nickname = ii.Value.ToLower();
                                         break;
                                     case "warmpup_time":
                                         cloak.CloakChargeTime = Convert.ToInt32(ii.Value);
@@ -668,7 +671,7 @@ namespace DSCore.Gen
                                 switch (ii.Name)
                                 {
                                     case "nickname":
-                                        disrupter.Nickname = ii.Value;
+                                        disrupter.Nickname = ii.Value.ToLower();
                                         break;
                                     case "range":
                                         disrupter.Range = Convert.ToInt32(ii.Value);
@@ -705,7 +708,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    ship.Nickname = ii.Value;
+                                    ship.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     ship.Name = Convert.ToUInt32(ii.Value);
@@ -763,7 +766,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    tempCloakingDevice.Nickname = ii.Value;
+                                    tempCloakingDevice.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     tempCloakingDevice.Name = Convert.ToUInt32(ii.Value);
@@ -782,7 +785,7 @@ namespace DSCore.Gen
 
                         try
                         {
-                            int index = cloaks.FindIndex(m => m.Nickname == tempCloakingDevice.Nickname);
+                            int index = cloaks.FindIndex(m => m.Nickname.ToLower() == tempCloakingDevice.Nickname.ToLower());
                             CloakingDevice cloak = cloaks[index];
                             cloak.CargoRequirement = tempCloakingDevice.CargoRequirement;
                             cloak.PowerUsage = tempCloakingDevice.PowerUsage;
@@ -804,7 +807,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    weapon.Nickname = ii.Value;
+                                    weapon.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     weapon.Name = Convert.ToUInt32(ii.Value);
@@ -822,7 +825,7 @@ namespace DSCore.Gen
                                     weapon.Hitpoints = Convert.ToSingle(ii.Value);
                                     break;
                                 case "projectile_archetype":
-                                    weapon.MunitionArchtype = ii.Value;
+                                    weapon.MunitionArchtype = ii.Value.ToLower();
                                     break;
                                 case "refire_delay":
                                     weapon.RefireDelay = Convert.ToSingle(ii.Value);
@@ -845,7 +848,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    munition.Nickname = ii.Value;
+                                    munition.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
                                     munition.Name = Convert.ToUInt32(ii.Value);
@@ -855,7 +858,7 @@ namespace DSCore.Gen
                                     break;
                                 case "explosion_arch":
                                     munition.WeaponType = WeaponType.Neutral;
-                                    munition.ExplosionArchtype = ii.Value;
+                                    munition.ExplosionArchtype = ii.Value.ToLower();
                                     break;
                                 case "volume":
                                     try
@@ -919,7 +922,7 @@ namespace DSCore.Gen
                             switch (ii.Name)
                             {
                                 case "nickname":
-                                    explosion.Nickname = ii.Value;
+                                    explosion.Nickname = ii.Value.ToLower();
                                     break;
                                 case "impluse":
                                     explosion.Impulse = Convert.ToSingle(ii.Value);
@@ -948,7 +951,7 @@ namespace DSCore.Gen
             {
                 try
                 {
-                    int index = tempMunitions.FindIndex(m => m.ExplosionArchtype == i.Nickname);
+                    int index = tempMunitions.FindIndex(m => string.Equals(m.ExplosionArchtype, i.Nickname, StringComparison.CurrentCultureIgnoreCase));
                     Munition mun = tempMunitions[index];
                     mun.Explosion = i;
                     tempMunitions[index] = mun;
@@ -964,7 +967,7 @@ namespace DSCore.Gen
             {
                 try
                 {
-                    int index = weapons.FindIndex(m => m.MunitionArchtype == i.Nickname);
+                    int index = weapons.FindIndex(m => m.MunitionArchtype == i.Nickname.ToLower());
                     Weapon weapon = weapons[index];
                     weapon.Munition = i;
                     weapons[index] = weapon;
@@ -993,16 +996,20 @@ namespace DSCore.Gen
             {
                 // First we create them!
                 var dbArmours = db.GetCollection<Armour>("Armours");
+                var dbBases = db.GetCollection<Base>("Bases");
                 var dbCloaks = db.GetCollection<CloakingDevice>("Cloaks");
                 var dbDisrupters = db.GetCollection<CloakDisrupter>("Disrupters");
                 var dbCommodities = db.GetCollection<Commodity>("Commodities");
                 var dbCMs = db.GetCollection<CountermeasureDropper>("CMs");
                 var dbFactions = db.GetCollection<Faction>("Factions");
                 var dbGoods = db.GetCollection<Good>("Goods");
+                var dbMarketsCommodities = db.GetCollection<Market>("MarketsCommodities");
+                var dbMarketsEquipment = db.GetCollection<Market>("MarketsEquipment");
                 var dbPowerplants = db.GetCollection<Powerplant>("Powerplants");
                 var dbScanners = db.GetCollection<Scanner>("Scanners");
                 var dbShields = db.GetCollection<Shield>("Shields");
                 var dbShips = db.GetCollection<Ship>("Ships");
+                var dbSystems = db.GetCollection<Ini.System>("Systems");
                 var dbWeapons = db.GetCollection<Weapon>("Weapons");
                 var dbThrusers = db.GetCollection<Thruster>("Thrusters");
                 var dbInfocards = db.GetCollection<Infocard>("Infocards");
@@ -1010,16 +1017,20 @@ namespace DSCore.Gen
                 // Then we populate them
                 Console.WriteLine();
                 InsertToDatabase(dbArmours, armours, "Armours");
+                InsertToDatabase(dbBases, bases, "Bases");
                 InsertToDatabase(dbCloaks, cloaks, "Cloaks");
                 InsertToDatabase(dbDisrupters, disrupters, "Disrupters");
                 InsertToDatabase(dbCommodities, commodities, "Commodities");
                 InsertToDatabase(dbCMs, droppers, "CMs");
                 InsertToDatabase(dbFactions, factions, "Factions");
                 InsertToDatabase(dbGoods, goods, "Goods");
+                InsertToDatabase(dbMarketsCommodities, marketCommodities, "MarketsCommodities");
+                InsertToDatabase(dbMarketsEquipment, marketEquipment, "MarketsEquipment");
                 InsertToDatabase(dbPowerplants, powerplants, "Powerplants");
                 InsertToDatabase(dbScanners, scanners, "Scanners");
                 InsertToDatabase(dbShields, shields, "Shields");
                 InsertToDatabase(dbShips, ships, "Ships");
+                InsertToDatabase(dbSystems, systems, "Systems");
                 InsertToDatabase(dbWeapons, weapons, "Weapons");
                 InsertToDatabase(dbThrusers, thrusters, "Thrusters");
                 InsertToDatabase(dbInfocards, infocards, "Infocards");
@@ -1057,6 +1068,21 @@ namespace DSCore.Gen
                 Console.WriteLine("Random Weapon: " + w.FindAll().Skip(new Random().Next(0, w.Count())).Take(1).First().Nickname);
                 Console.WriteLine("Random Weapon: " + w.FindAll().Skip(new Random().Next(0, w.Count())).Take(1).First().Nickname);
                 Console.WriteLine();
+
+                var mc = db.GetCollection<Market>("MarketsCommodities");
+                Console.WriteLine($"MarketCommodity Count: {mc.Count()}");
+                Console.WriteLine("Random MarketCommodity: " + mc.FindAll().Skip(new Random().Next(0, mc.Count())).Take(1).First().Base);
+                Console.WriteLine("Random MarketCommodity: " + mc.FindAll().Skip(new Random().Next(0, mc.Count())).Take(1).First().Base);
+                Console.WriteLine("Random MarketCommodity: " + mc.FindAll().Skip(new Random().Next(0, mc.Count())).Take(1).First().Base);
+                Console.WriteLine();
+
+                var me = db.GetCollection<Market>("MarketsEquipment");
+                Console.WriteLine($"MarketEquipment Count: {me.Count()}");
+                Console.WriteLine("Random MarketEquipment: " + me.FindAll().Skip(new Random().Next(0, me.Count())).Take(1).First().Base);
+                Console.WriteLine("Random MarketEquipment: " + me.FindAll().Skip(new Random().Next(0, me.Count())).Take(1).First().Base);
+                Console.WriteLine("Random MarketEquipment: " + me.FindAll().Skip(new Random().Next(0, me.Count())).Take(1).First().Base);
+                Console.WriteLine();
+
                 Console.ReadLine();
             }
         }
@@ -1098,6 +1124,267 @@ namespace DSCore.Gen
                 infoList.Add(new Infocard { Key = i.Key, Value = i.Value });
 
             return infoList;
+        }
+
+        // This stuff is so big, I'm moving it to it's own function for better readability.
+        static void SetupBasesAndSystems(IniOptions o, string data, out List<Market> marketCommodities, out List<Market> marketEquipment, out List<Base> bases, out List<Ini.System> systems)
+        {
+            systems = new List<Ini.System>();
+            bases = new List<Base>();
+            marketCommodities = new List<Market>();
+            marketEquipment = new List<Market>();
+            Dictionary<string, string> nickFileDictionary = new Dictionary<string, string>();
+            Dictionary<string, List<Base>> baseSystems = new Dictionary<string, List<Base>>();
+
+            IniFile ini = new IniFile(o);
+            ini.Load(data + @"\Equipment\market_misc.ini");
+
+            foreach (IniSection i in ini.Sections)
+            {
+                if (i.Name.ToLower() != "basegood") continue;
+
+                Market market = new Market();
+                foreach (IniKey ii in i.Keys)
+                {
+                    try
+                    {
+                        switch (ii.Name.ToLower())
+                        {
+
+                            case "base":
+                                market.Base = ii.Value.ToLower();
+                                break;
+                            case "marketgood":
+                                if (market.Good == null)
+                                    market.Good = new Dictionary<string, decimal>();
+
+                                string[] arr = ii.Value.Split(",");
+                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                {
+                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    break;
+                                }
+
+                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                break;
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error during market_misc: {ex.Message}");
+                    }
+                }
+                marketEquipment.Add(market);
+            }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"\Equipment\market_commodities.ini");
+
+            foreach (IniSection i in ini.Sections)
+            {
+                if (i.Name.ToLower() != "basegood") continue;
+
+                Market market = new Market();
+                foreach (IniKey ii in i.Keys)
+                {
+                    try
+                    {
+                        switch (ii.Name.ToLower())
+                        {
+                            case "base":
+                                market.Base = ii.Value.ToLower();
+                                break;
+                            case "marketgood":
+                                if (market.Good == null)
+                                    market.Good = new Dictionary<string, decimal>();
+
+                                string[] arr = ii.Value.Split(",");
+                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                {
+                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    break;
+                                }
+
+                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error during market_commodities: {ex.Message}");
+                    }
+                }
+                marketCommodities.Add(market);
+            }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"\UNIVERSE\universe.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                switch (i.Name.ToLower())
+                {
+                    case "base":
+                        Base iBase = new Base();
+                        string systemStr = string.Empty;
+                        foreach (IniKey ii in i.Keys)
+                        {
+                            switch (ii.Name.ToLower())
+                            {
+                                case "nickname":
+                                    iBase.Nickname = ii.Value.ToLower();
+                                    break;
+                                case "system":
+                                    systemStr = ii.Value;
+                                    iBase.System = systemStr;
+                                    
+                                    if (!baseSystems.ContainsKey(systemStr))
+                                        baseSystems[systemStr] = new List<Base>();
+                                    break;
+                                case "strid_name":
+                                    iBase.Name = Convert.ToUInt32(ii.Value);
+                                    break;
+                            }
+                        }
+
+                        baseSystems[systemStr].Add(iBase);
+                        bases.Add(iBase);
+                        break;
+                    case "system":
+                        Ini.System system = new Ini.System { Region = "None", Bases = new List<Base>()};
+                        string temp3 = null, temp4 = null;
+                        foreach (IniKey ii in i.Keys)
+                        {
+                            switch (ii.Name.ToLower())
+                            {
+                                case "nickname":
+                                    system.Nickname = ii.Value.ToLower();
+                                    temp3 = ii.Value;
+                                    break;
+                                case "ids_info":
+                                    system.Infocard = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "file":
+                                    temp4 = ii.Value;
+                                    break;
+                                case "strid_name":
+                                    system.Name = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "navmapscale":
+                                    system.NavMapScale = Convert.ToDecimal(ii.Value);
+                                    break;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(temp3) || string.IsNullOrEmpty(temp4))
+                            break;
+
+                        nickFileDictionary.TryAdd(temp3, temp4);
+                        systems.Add(system);
+                        break;
+                }
+            }
+
+            foreach (var i in baseSystems)
+            {
+                var sys = systems.FirstOrDefault(x => x.Nickname.ToLower() == i.Key.ToLower());
+                if (sys != null)
+                {
+                    int pos = systems.IndexOf(sys);
+                    sys.Bases = i.Value;
+                    systems[pos] = sys;
+                }
+            }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"\Universe\Territory.ini");
+
+            foreach (IniSection i in ini.Sections)
+            {
+                switch (i.Name.ToLower())
+                {
+                    case "houses":
+                        string tHouse = "";
+                        string tSystems = "";
+                        foreach (IniKey ii in i.Keys)
+                        {
+                            if (!string.IsNullOrEmpty(tHouse) && !string.IsNullOrEmpty(tSystems))
+                            {
+                                string[] strs = tSystems.Split(",");
+                                for (var index = 0; index < systems.Count; index++)
+                                {
+                                    Ini.System iSystem = systems[index];
+                                    int pos = Array.IndexOf(strs, iSystem.Nickname);
+                                    if (pos != -1)
+                                    {
+                                        iSystem.Region = strs[pos];
+                                        systems[index] = iSystem;
+                                    }
+                                }
+                            }
+
+                            switch (ii.Name.ToLower())
+                            {
+                                case "house":
+                                    tHouse = ii.Value;
+                                    break;
+                                case "systems":
+                                    tSystems = ii.Value;
+                                    break;
+                            }
+                        }
+
+                        break;
+                }
+            }
+
+            foreach (var s in nickFileDictionary)
+            {
+                ini = new IniFile(o);
+                ini.Load(data + @"\Universe\" + s.Value);
+                var sys = systems.FirstOrDefault(x => x.Nickname.ToLower() == s.Key.ToLower());
+                if (sys == null)
+                    continue;
+
+                foreach (var i in ini.Sections)
+                {
+                    if (i.Name.ToLower() != "object") continue;
+                    if (i.Keys.Contains("base"))
+                    {
+                        if (!i.Keys.Contains("dock_with"))
+                            continue;
+
+                        Base iBase = bases.FirstOrDefault(x => string.Equals(x.Nickname, i.Keys["dock_with"].Value, StringComparison.CurrentCultureIgnoreCase));
+                        if (iBase == null)
+                            continue;
+
+                        int iPos = bases.IndexOf(iBase);
+                        if (!i.Keys.Contains("ids_name") || !i.Keys.Contains("reputation") ||
+                            !i.Keys.Contains("archetype") || !i.Keys.Contains("pos"))
+                        {
+                            bases.RemoveAt(iPos);
+                            try
+                            {
+                                marketCommodities.RemoveAt(marketCommodities.IndexOf(marketCommodities.First(x => x.Base == i.Keys["dock_with"].Value.ToLower())));
+                            } catch { }
+
+                            try
+                            {
+                                marketEquipment.RemoveAt(marketEquipment.IndexOf(marketEquipment.First(x => x.Base == i.Keys["dock_with"].Value.ToLower())));
+                            } catch { }
+
+                            continue;
+                        }
+
+                        iBase.Infocard = Convert.ToUInt32(i.Keys["ids_name"].Value);
+                        iBase.OwnerFaction = i.Keys["reputation"].Value;
+                        iBase.ArchetypeNickname = i.Keys["archetype"].Value.ToLower();
+                        string[] pos = i.Keys["pos"].Value.Split(",");
+                        iBase.Position = new float[3] { Convert.ToSingle(pos[0]), Convert.ToSingle(pos[1]), Convert.ToSingle(pos[2])};
+                        bases[iPos] = iBase;
+                    }
+                }
+            }
         }
     }
 }

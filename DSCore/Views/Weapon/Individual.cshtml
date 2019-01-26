@@ -3,8 +3,9 @@
 @using DSCore.Ini
 @model Weapon
 @{
-    KeyValuePair<string, string> infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
-    ViewData["Title"] = infocard.Key;
+    Dictionary<uint, string> infocards = (Dictionary<uint, string>)ViewBag.Infocards;
+    Dictionary<Base, decimal> sellpoints = ViewBag.Sellpoints;
+    ViewData["Title"] = infocards[Model.Name];
 }
 
 
@@ -16,7 +17,7 @@
         <br/>
         <h1>TODO: Add icon</h1>
 
-        @Html.Raw(infocard.Value)
+        @Html.Raw(infocards[Model.Infocard])
     </div>
     
     @{
@@ -47,7 +48,7 @@
             <p>
                 <span>Nickname: </span> @Model.Nickname <br/>
                 <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br/>
-                <span>Weapon Type: </span>@(infocard.Value.ToLower().Contains("nomad") ? "Nomad" : Model.Munition.Explosion == null ? TypeFunctions.EnumToString(Model.Munition.WeaponType) : "Explosive")<br/>
+                <span>Weapon Type: </span>@(Convert.ToString(ViewData["Title"]).ToLower().Contains("nomad") ? "Nomad" : Model.Munition.Explosion == null ? TypeFunctions.EnumToString(Model.Munition.WeaponType) : "Explosive")<br/>
                 <span>Hull Damage: </span>@((Model.Munition.HullDamage + explosionHull).ToString("N0"))<br/>
                 <span>Shield Damage: </span>@((Model.Munition.ShieldDamage + Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
                 <span>Energy Damage: </span>@((Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
@@ -63,6 +64,54 @@
     </div>
     
     <div class="window">
-        <h1>TODO: Setup base sell points</h1>
+        <h1>Sellpoints</h1>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Base Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Location</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in sellpoints)
+                {
+                <tr>
+                    @{
+                        infocards.TryGetValue(i.Key.Name, out var value);
+                        if (string.IsNullOrEmpty(value))
+                        { continue; }
+                    }
+                    <td><a href="@($"{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}")">@value</a></td>
+                    <td>@i.Value</td>
+                    <td>@i.Key.System</td>
+                    <td>@i.Key.OwnerFaction</td>
+                    <td>
+                </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

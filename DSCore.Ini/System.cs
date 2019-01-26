@@ -5,15 +5,14 @@ using LiteDB;
 
 namespace DSCore.Ini
 {
-    public sealed class Base
+    public class System
     {
         [BsonId]
         public string Nickname { get; set; }
         public uint Name { get; set; }
         public uint Infocard { get; set; }
-        public string OwnerFaction { get; set; }
-        public string System { get; set; }
-        public string ArchetypeNickname { get; set; }
-        public float[] Position { get; set; } // A tuple cannot be serialized
+        public decimal NavMapScale { get; set; }
+        public string Region { get; set; }
+        public List<Base> Bases { get; set; }
     }
 }

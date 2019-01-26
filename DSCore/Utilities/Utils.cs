@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DSCore.Ini;
 
 namespace DSCore.Utilities
 {
@@ -30,11 +31,32 @@ namespace DSCore.Utilities
             }
         }
 
+        public static Dictionary<Base, decimal> GetSellPoint(string endpoint, string item)
+        {
+            List<Market> markets = GetAPIResponse<List<Market>>(endpoint);
+            Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
+            foreach (var i in markets)
+            {
+                if (i.Good.ContainsKey(item))
+                    baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == item).Value);
+            }
+
+            Dictionary<Base, decimal> bases = new Dictionary<Base, decimal>();
+            foreach (var s in baseList)
+            {
+                Base b = GetAPIResponse<Base>("base/" + s.Key);
+                bases[b] = s.Value;
+            }
+
+            return bases;
+        }
+
         public static string XmlToHtml(string xml)
         {
             Regex r = new Regex(@"<\?xml.*\?>");
             Match m = r.Match(xml);
-            xml = xml.Replace(m.Value, "");
+            if (m.Success)
+                xml = xml.Replace(m.Value, "");
             r = new Regex(@"<JUST loc=\""center\""\/><TEXT>.*?<\/TEXT>");
             m = r.Match(xml);
             if (m.Success)

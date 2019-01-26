@@ -59,10 +59,15 @@ namespace DSCore.Controllers
         {
             Weapon weapon = Utils.GetAPIResponse<Weapon>(Utils.Endpoints.weapon + "/" + nickname);
             Good good = Utils.GetAPIResponse<Good>(Utils.Endpoints.good + "/" + nickname);
-            string i = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + weapon.Name).Value;
-            string ii = Utils.GetAPIResponse<Infocard>(Utils.Endpoints.infocard + "/" + weapon.Infocard).Value;
-            ii = Utils.XmlToHtml(ii);
-            KeyValuePair<string, string> infocard = new KeyValuePair<string, string>(i, ii);
+            Infocard[] infocards = Utils.GetAPIResponse<Infocard[]>(Utils.Endpoints.infocard.ToString());
+            Dictionary<Base, decimal> sellpoints = Utils.GetSellPoint("market/equipment", nickname);
+
+            Dictionary<uint, string> newInfocards = new Dictionary<uint, string>();
+            foreach (var iter in infocards)
+            {
+                if (sellpoints.Keys.FirstOrDefault(x => x.Name == iter.Key || x.Infocard == iter.Key) != null || iter.Key == weapon.Name || iter.Key == weapon.Infocard)
+                    newInfocards[iter.Key] = Utils.XmlToHtml(iter.Value);
+            }
 
             weapon.Price = good.Price;
             weapon.BadBuyPrice = good.BadSellPrice;
@@ -71,7 +76,8 @@ namespace DSCore.Controllers
             weapon.BadSellPrice = good.BadSellPrice;
             weapon.GoodBuyPrice = good.GoodBuyPrice;
 
-            ViewBag.Infocard = infocard;
+            ViewBag.Infocards = newInfocards;
+            ViewBag.Sellpoints = sellpoints;
             return View("Individual", weapon);
         }
     }
