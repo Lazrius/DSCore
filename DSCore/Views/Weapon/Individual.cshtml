@@ -1,6 +1,7 @@
-﻿@using System.Text.RegularExpressions
+﻿@using System.Globalization
+@using System.Text.RegularExpressions
 @using DSCore.Ini
-@model Commodity
+@model Weapon
 @{
     KeyValuePair<string, string> infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
     ViewData["Title"] = infocard.Key;
@@ -18,27 +19,50 @@
         @Html.Raw(infocard.Value)
     </div>
     
+    @{
+        float explosionHull = 0, explosionShield = 0;
+        if (Model.Munition.Explosion != null)
+        {
+            explosionHull = Model.Munition.Explosion.HullDamage;
+            explosionShield = Model.Munition.Explosion.EnergyDamage;
+        }
+
+        string munStuff = "";
+        munStuff += "<span>Is Dumbfire Projectile: </span>" + (Model.Munition.IsSeeking ? "No" : "Yes") + "<br/>";
+        munStuff += "<span>Projectile Lifetime: </span>" + Model.Munition.Lifetime.ToString("N0") + (Model.Munition.Lifetime == 1 ? " Second" : " Seconds") + "<br/>";
+        munStuff += "<span>Projectile Speed: </span>" + Model.MuzzleVelocity.ToString("N0") + " m/s<br/>";
+        munStuff += "<span>Range: </span>" + Model.MuzzleVelocity * Model.Munition.Lifetime + " m<br/>";
+        if (Model.Munition.Explosion != null)
+        {
+            munStuff += "<span>Is Cruise Disrupter: </span>" + (Model.Munition.IsCruiseDistupter ? "Yes" : "No") + "<br/>";
+            munStuff += "<span>Explosion Radius: </span>" + Model.Munition.Explosion.Radius + "<br/>";
+            munStuff += "<span>Explosion Impulse: </span>" + Model.Munition.Explosion.Impulse + "<br/>";
+            munStuff += "<span>Explosion Strength: </span>" + Model.Munition.Explosion.Strength + "<br/>";
+        }
+    }
+    
     <div class="window window-cell">
-        <table id="tbl">
-            <tbody>
-            <tr>
-                <td>@infocard.Key</td>
-                <td>@Model.Nickname</td>
-                <td>@Model.Price</td>
-                <td>@Model.GoodBuyPrice / @Model.BadBuyPrice</td>
-                <td>@Model.GoodSellPrice / @Model.BadSellPrice</td>
-                <td>@(Model.DecayRate != 0 ? ((Int32) Model.Hitpoints % Model.DecayRate).ToString() : "Not Perishable")</td>
-            </tr>
-            </tbody>
-        </table>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <h1>TODO: Setup base sell points</h1>
+        <h2>@ViewData["Title"]</h2>
+        <div class="text-left">
+            <p>
+                <span>Nickname: </span> @Model.Nickname <br/>
+                <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br/>
+                <span>Weapon Type: </span>@(infocard.Value.ToLower().Contains("nomad") ? "Nomad" : Model.Munition.Explosion == null ? TypeFunctions.EnumToString(Model.Munition.WeaponType) : "Explosive")<br/>
+                <span>Hull Damage: </span>@((Model.Munition.HullDamage + explosionHull).ToString("N0"))<br/>
+                <span>Shield Damage: </span>@((Model.Munition.ShieldDamage + Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
+                <span>Energy Damage: </span>@((Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
+                <span>Gun Hitpoints: </span> @Model.Hitpoints <br/>
+                <span>Has Forced Orientation: </span> @(Model.Munition.HasForcedOrientation ? "Yes" : "No")<br/>
+                <span>Volume: </span> @(Model.Volume.ToString("N1")) <br/>
+                <span>Requires Ammo: </span> @(Model.Munition.RequiresAmmo ? "Yes" : "No") <br/>
+                @(Model.Munition.RequiresAmmo ? Html.Raw("<span>Ammo Limit: </span>" + Model.Munition.AmmoLimit.ToString("N0") + " <br/>" + 
+                                                         (Model.Munition.Hitpoints != 0 ? "<span>Projectile Hitpoints: </span>" + Model.Munition.Hitpoints.ToString("N0") + "<br/>" : String.Empty)) : null)
+                @(Html.Raw(munStuff))
+            </p>
+        </div>
     </div>
     
+    <div class="window">
+        <h1>TODO: Setup base sell points</h1>
+    </div>
 </div>

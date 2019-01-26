@@ -12,6 +12,7 @@ namespace DSCore.Ini
         public float RefireDelay { get; set; }
         public float TurnRate { get; set; }
         public float Volume { get; set; }
+        public float MuzzleVelocity { get; set; }
         public string MunitionArchtype { get; set; }
         public Munition Munition { get; set; }
     }

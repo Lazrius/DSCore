@@ -830,6 +830,9 @@ namespace DSCore.Gen
                                 case "turn_rate":
                                     weapon.TurnRate = Convert.ToSingle(ii.Value);
                                     break;
+                                case "muzzle_velocity":
+                                    weapon.MuzzleVelocity = Convert.ToSingle(ii.Value);
+                                    break;
                             }
                         }
 
