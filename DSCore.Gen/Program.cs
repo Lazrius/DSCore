@@ -1235,7 +1235,7 @@ namespace DSCore.Gen
                                     iBase.Nickname = ii.Value.ToLower();
                                     break;
                                 case "system":
-                                    systemStr = ii.Value;
+                                    systemStr = ii.Value.ToLower();
                                     iBase.System = systemStr;
                                     
                                     if (!baseSystems.ContainsKey(systemStr))
