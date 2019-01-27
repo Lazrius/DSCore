@@ -74,6 +74,11 @@ body {
     font-family: "Segoe UI", "Open Sans", sans-serif;
 }
 
+canvas {
+    width: 500px;
+    height: 500px;
+}
+
 .window {
     margin: 2em auto;
     min-width: 28em;

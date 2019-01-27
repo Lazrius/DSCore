@@ -15,6 +15,8 @@ namespace DSCore.Gen
         static void Main(string[] args)
         {
             string root = Directory.GetCurrentDirectory();
+            string output = root + @"\Output";
+            
             if (!File.Exists(root + @"\EXE\Freelancer.exe"))
             {
                 Console.WriteLine("Freelancer.exe not found. Assuming not in the correct directory. Please relocate to the root of your Freelancer install.");
@@ -46,7 +48,7 @@ namespace DSCore.Gen
             };
 
             // Markets, Bases, Systems
-            SetupBasesAndSystems(iniOptions, data, out var marketCommodities, out var marketEquipment, out var bases, out var systems);
+            SetupBasesAndSystems(iniOptions, data, out var marketCommodities, out var marketEquipment, out var marketShips, out var bases, out var systems);
 
             // Commodities and Armour
             IniFile ini = new IniFile(iniOptions);
@@ -120,18 +122,30 @@ namespace DSCore.Gen
 
             ini = new IniFile(iniOptions);
             ini.Load(equip + @"\goods.ini");
+            Dictionary<string, float> shipHulls = new Dictionary<string, float>();
+            Dictionary<string, Good> shipsGoods = new Dictionary<string, Good>();
             foreach (IniSection i in ini.Sections)
             {
                 Good good = new Good();
+                string category = "";
+                string hull = "";
                 foreach (IniKey ii in i.Keys)
                 {
-                    if (ii.Name == "category" && ii.Value.Contains("ship"))
-                        break;
-
                     switch (ii.Name.ToLower())
                     {
                         case "nickname":
+                            // Horrible edge case right here
+                            if (ii.Value.ToLower().Contains("rm_") && !ii.Value.ToLower().Contains("rm_h"))
+                                break;
                             good.Nickname = ii.Value.ToLower();
+                            break;
+
+                        case "category":
+                            category = ii.Value;
+                            break;
+
+                        case "hull":
+                            hull = ii.Value;
                             break;
 
                         case "equipment":
@@ -162,12 +176,40 @@ namespace DSCore.Gen
                             good.BadBuyPrice = Convert.ToSingle(ii.Value);
                             break;
                     }
-
-                    
                 }
-                if (good.GoodBuyPrice == 0 || string.IsNullOrEmpty(good.Equipment) || good.GoodSellPrice == 0)
+
+                if ((good.GoodBuyPrice == 0 || string.IsNullOrEmpty(good.Equipment) || good.GoodSellPrice == 0) && category == "commodity")
                     continue;
+
+                if (category == "ship")
+                {
+                    shipsGoods[hull] = good;
+                    continue;
+                }
+
+                else if (category == "shiphull")
+                {
+                    shipHulls[good.Nickname] = good.Price;
+                    continue;
+                }
+
                 goods.Add(good);
+            }
+
+            for (var i = 0; i <= shipsGoods.Count - 1; i++)
+            {
+                try
+                {
+                    var pair = shipsGoods.ElementAt(i);
+                    Good good = pair.Value;
+                    good.Price = shipHulls[pair.Key];
+                    goods.Add(good);
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Invalid ShipGood Entry: " + ex.Message);
+                }
             }
 
             ini = new IniFile(iniOptions);
@@ -705,7 +747,7 @@ namespace DSCore.Gen
                         Ship ship = new Ship();
                         foreach (var ii in i.Keys)
                         {
-                            switch (ii.Name)
+                            switch (ii.Name.ToLower())
                             {
                                 case "nickname":
                                     ship.Nickname = ii.Value.ToLower();
@@ -737,12 +779,30 @@ namespace DSCore.Gen
                                 case "shield_battery_limit":
                                     ship.ShieldBats = Convert.ToInt32(ii.Value);
                                     break;
+                                case "da_archetype":
+                                    ship.CmpFile = ii.Value;
+                                    break;
+                                case "material_library":
+                                    if (string.IsNullOrEmpty(ship.MatFile))
+                                        ship.MatFile = ii.Value;
+                                    break;
                             }
                         }
 
                         ships.Add(ship);
                         break;
                 }
+            }
+
+            Console.WriteLine("Copying Ship CMP/MAT files.");
+            foreach (Ship ship in ships)
+            {
+                if (string.IsNullOrEmpty(ship.CmpFile) || string.IsNullOrEmpty(ship.MatFile))
+                    continue;
+                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.CmpFile));
+                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.MatFile));
+                File.Copy(data + @"\" + ship.CmpFile, output + @"\DATA\" + ship.CmpFile, true);
+                File.Copy(data + @"\" + ship.MatFile, output + @"\DATA\" + ship.MatFile, true);
             }
 
             Console.WriteLine("Processed Ships.");
@@ -985,14 +1045,14 @@ namespace DSCore.Gen
 
             // OK ALL DONE. Let's put this shite in a database
             // We want to start from scratch, so we rename an existing db if there is one.
-            if (File.Exists(root + @"\FLData.db"))
+            if (File.Exists(output + @"\FLData.db"))
             {
-                if (File.Exists(root + @"\FLData.db.BACKUP"))
-                    File.Delete(root + @"\FLData.db.BACKUP");
-                File.Move(root + @"\FLData.db", root + @"\FLData.db.BACKUP");
+                if (File.Exists(output + @"\FLData.db.BACKUP"))
+                    File.Delete(output + @"\FLData.db.BACKUP");
+                File.Move(output + @"\FLData.db", output + @"\FLData.db.BACKUP");
             }
 
-            using (var db = new LiteDatabase(root + @"\FLData.db"))
+            using (var db = new LiteDatabase(output + @"\FLData.db"))
             {
                 // First we create them!
                 var dbArmours = db.GetCollection<Armour>("Armours");
@@ -1005,6 +1065,7 @@ namespace DSCore.Gen
                 var dbGoods = db.GetCollection<Good>("Goods");
                 var dbMarketsCommodities = db.GetCollection<Market>("MarketsCommodities");
                 var dbMarketsEquipment = db.GetCollection<Market>("MarketsEquipment");
+                var dbMarketsShips = db.GetCollection<Market>("MarketsShips");
                 var dbPowerplants = db.GetCollection<Powerplant>("Powerplants");
                 var dbScanners = db.GetCollection<Scanner>("Scanners");
                 var dbShields = db.GetCollection<Shield>("Shields");
@@ -1026,6 +1087,7 @@ namespace DSCore.Gen
                 InsertToDatabase(dbGoods, goods, "Goods");
                 InsertToDatabase(dbMarketsCommodities, marketCommodities, "MarketsCommodities");
                 InsertToDatabase(dbMarketsEquipment, marketEquipment, "MarketsEquipment");
+                InsertToDatabase(dbMarketsShips, marketShips, "MarketsShips");
                 InsertToDatabase(dbPowerplants, powerplants, "Powerplants");
                 InsertToDatabase(dbScanners, scanners, "Scanners");
                 InsertToDatabase(dbShields, shields, "Shields");
@@ -1037,7 +1099,7 @@ namespace DSCore.Gen
             }
 
             // Time to check that it worked!
-            using (var db = new LiteDatabase(root + @"\FLData.db"))
+            using (var db = new LiteDatabase(output + @"\FLData.db"))
             {
                 Console.WriteLine();
                 Console.WriteLine("Running Tests:");
@@ -1127,12 +1189,15 @@ namespace DSCore.Gen
         }
 
         // This stuff is so big, I'm moving it to it's own function for better readability.
-        static void SetupBasesAndSystems(IniOptions o, string data, out List<Market> marketCommodities, out List<Market> marketEquipment, out List<Base> bases, out List<Ini.System> systems)
+        static void SetupBasesAndSystems(IniOptions o, string data, 
+            out List<Market> marketCommodities, out List<Market> marketEquipment, out List<Market> marketShips,
+            out List<Base> bases, out List<Ini.System> systems)
         {
             systems = new List<Ini.System>();
             bases = new List<Base>();
             marketCommodities = new List<Market>();
             marketEquipment = new List<Market>();
+            marketShips = new List<Market>();
             Dictionary<string, string> nickFileDictionary = new Dictionary<string, string>();
             Dictionary<string, List<Base>> baseSystems = new Dictionary<string, List<Base>>();
 
@@ -1176,6 +1241,48 @@ namespace DSCore.Gen
                     }
                 }
                 marketEquipment.Add(market);
+            }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"\Equipment\market_ships.ini");
+
+            foreach (IniSection i in ini.Sections)
+            {
+                if (i.Name.ToLower() != "basegood") continue;
+
+                Market market = new Market();
+                foreach (IniKey ii in i.Keys)
+                {
+                    try
+                    {
+                        switch (ii.Name.ToLower())
+                        {
+
+                            case "base":
+                                market.Base = ii.Value.ToLower();
+                                break;
+                            case "marketgood":
+                                if (market.Good == null)
+                                    market.Good = new Dictionary<string, decimal>();
+
+                                string[] arr = ii.Value.Split(",");
+                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                {
+                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    break;
+                                }
+
+                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                break;
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error during market_ships: {ex.Message}");
+                    }
+                }
+                marketShips.Add(market);
             }
 
             ini = new IniFile(o);

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StaticFileOptions = Microsoft.AspNetCore.Builder.StaticFileOptions;
 
 namespace DSCore
 {
@@ -31,7 +32,7 @@ namespace DSCore
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            services.AddDirectoryBrowser();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -50,7 +51,11 @@ namespace DSCore
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "application/octet-stream"
+            });
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

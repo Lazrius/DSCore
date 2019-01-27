@@ -1,0 +1,96 @@
+﻿@using System.Globalization
+@using DSCore.Ini
+@using DSCore.Utilities
+@model Ship
+@{
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
+    List<System> Systems = ViewBag.Systems;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
+}
+
+
+
+<div class="text-center">
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+        <canvas id="model" file="@(Model.CmpFile)" mat="@(Model.MatFile)"></canvas>
+        <input id="zoom" type="range" min="1" max="4" value="1" step="any">
+    </div>
+    
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+        <div class="text-left">
+            <p>
+                <span>Nickname: </span> @Model.Nickname <br />
+                <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br />
+                <span>Ship Class: </span>@{
+                                             string shipClass = Model.ShipClass.ToString();
+                                             shipClass = new string(shipClass.SelectMany((c, i) => i != 0 && char.IsUpper(c) && !char.IsUpper(shipClass[i - 1]) ? new char[] { ' ', c } : new char[] { c }).ToArray());}
+                @shipClass<br />
+                <span>Hitpoints: </span>@(Model.Hitpoints.ToString("N0"))<br />
+                <span>Nanobots: </span>@(Model.Nanobots.ToString("N0"))<br />
+                <span>Shield Bats: </span>@(Model.ShieldBats.ToString("N0"))<br />
+                <span>Powercore: </span> @Model <br />
+                @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+            </p>
+        </div>
+    </div>
+    
+    <div class="window">
+        <h1>Sellpoints</h1>
+        <table>
+            <thead>
+            <tr>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Base Name</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Price</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>System</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Faction</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Location</span></a>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var i in Sellpoints)
+            {
+                string sellpoint = "";
+                string value;
+                try
+                {
+                    value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
+                    sellpoint += "<tr>";
+                    sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
+                    sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
+                    sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                    sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
+                    sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                    sellpoint += "</tr>";
+                    @Html.Raw(sellpoint)
+                }
+                catch
+                { continue; }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="module" src="~/js/GLancer/showroom.js"></script>

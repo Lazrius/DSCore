@@ -7,6 +7,8 @@ namespace DSCore.Ini
 {
     public sealed class Ship : Good
     {
+        public string CmpFile { get; set; }
+        public string MatFile { get; set; }
         public int CargoSize { get; set; }
         public int Nanobots { get; set; }
         public int ShieldBats { get; set; }

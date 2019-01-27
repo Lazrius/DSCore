@@ -1,0 +1,98 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<Ship>
+@{
+    ViewData["Title"] = "Ships";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Ship Class</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Hitpoints</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Hold Size</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Nudge Force</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Strafe Force</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Bots/Bats</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Powercore</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (Ship ship in ViewData.Model)
+            {
+                if (ship.Hitpoints < 3000) { continue; } // the highest buyable ship in discovery has 3400 hull
+                if (ship.CargoSize == 0 && ship.NudgeForce == 0 && ship.StrafeForce == 0) { continue; }
+                <tr>
+                    <td>
+                        @{
+                            string value;
+                            try
+                            { value = Infocards.FirstOrDefault(x => x.Key == ship.Name).Value; }
+                            catch { continue; }
+                        }
+                        <a href="@($"{ViewContext.HttpContext.Request.Path}/{ship.Nickname}")"> @value </a>
+                    </td>
+                    <td data-price="@ship.Price.ToString("N0").Replace(",", ""))">@ship.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                    <td>
+                        @{
+                            string shipClass = ship.ShipClass.ToString();
+                            shipClass = new string(shipClass.SelectMany((c, i) => i != 0 && char.IsUpper(c) && !char.IsUpper(shipClass[i - 1]) ? new char[] { ' ', c } : new char[] { c }).ToArray());}
+                        @shipClass
+                    </td>
+                    <td data-price="@ship.Price.ToString("N0").Replace(",", ""))">@ship.Hitpoints.ToString("N0")</td>
+                    <td data-cargo="@ship.CargoSize.ToString("N0").Replace(",", ""))">@ship.CargoSize.ToString("N0")</td>
+                    <td>@ship.NudgeForce.ToString("N0")</td>
+                    <td>@ship.StrafeForce.ToString("N0")</td>
+                    <td data-bots="@ship.ShieldBats.ToString("N0").Replace(",", ""))">@ship.Nanobots / @ship.ShieldBats</td>
+                    <td>@(ship)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>
