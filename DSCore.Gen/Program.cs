@@ -755,7 +755,7 @@ namespace DSCore.Gen
                                 case "ids_name":
                                     ship.Name = Convert.ToUInt32(ii.Value);
                                     break;
-                                case "ids_info":
+                                case "ids_info1":
                                     ship.Infocard = Convert.ToUInt32(ii.Value);
                                     break;
                                 case "hold_size":
