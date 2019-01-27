@@ -135,6 +135,10 @@ h1, .h1, h2, .h2 {
     margin-bottom: 0;
 }
 
+a > span {
+    font-size: 14px;
+}
+
 .footer {
     position: absolute;
     width: 55%;

@@ -1,0 +1,80 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@model Faction
+@{
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    List<Faction> Factions = (List<Faction>) ViewBag.Factions;
+    List<System> Systems = (List<System>) ViewBag.Systems;
+    List<Base> Bases = ViewBag.Bases;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
+}
+
+
+
+<div class="text-center">
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+
+        @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+    </div>
+    
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]'s Bases</h2>
+        
+        @foreach (var i in Bases)
+        {
+            System s = Systems.Find(x => x.Nickname == i.System);
+            <a href="@(ViewContext.HttpContext.Request.Host + "/base/" + i.Nickname)">
+                <p>@Infocards.First(x => x.Key == i.Name).Value<br/>
+                    @Infocards.First(x => x.Key == s.Name).Value - @Utils.GetGridCode(s, i.Position, true)</p>
+            </a>
+        }
+    </div>
+
+    <div class="window">
+        <h1>Faction Relations</h1>
+        <table>
+            <thead>
+            <tr id="tbl-header">
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Faction</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>@ViewData["Title"]'s Feelings Towards</span></a>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var i in Model.FeelingsTowards)
+            {
+                try
+                {
+                    string f = "";
+                    Faction fac = Factions.Find(y => y.Nickname.Trim() == i.Key.Trim());
+                    uint num;
+                    if (fac.Nickname.Contains("pf_"))
+                    { num = fac.ShortName;}
+                    else
+                    { num = fac.Name;}
+
+                    string value = Infocards.First(x => x.Key == num).Value;
+                    f += "<tr>";
+                    f += $"<td><a href=\"{ViewContext.HttpContext.Request.Host}/base/{i.Key.Trim()}\">{value}</a></td>";
+                    f += $"<td>{i.Value}</td>";
+                    f += "</tr>";
+                    @Html.Raw(f)
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

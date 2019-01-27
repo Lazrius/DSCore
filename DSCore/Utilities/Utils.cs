@@ -109,10 +109,6 @@ namespace DSCore.Utilities
             m = r.Match(xml);
             if (m.Success)
                 xml = xml.Replace(m.Value, "");
-            r = new Regex(@"<TRA.*?\/>");
-            m = r.Match(xml);
-            if (m.Success)
-                xml = xml.Replace(m.Value, "");
             r = new Regex(@"<JUST.*?\/>");
             m = r.Match(xml);
             if (m.Success)
@@ -122,10 +118,14 @@ namespace DSCore.Utilities
             xml = xml.Replace("<PARA/>", "<br/>");
             xml = xml.Replace("<TEXT>", "<p>");
             xml = xml.Replace("</TEXT>", "</p>");
-            r = new Regex(@"<(\w+)\s*.*?>\s*?</\1>");
+            r = new Regex(@"<(\w+)\b(?:\s+[\w\-.:]+(?:\s*=\s*(?:""[^ ""]*"" | ""[^""] * ""|[\w\-.:]+))?)*\s*\/?>\s*<\/\1\s*>");
             m = r.Match(xml);
             if (m.Success)
                 xml = xml.Replace(m.Value, @"");
+            r = new Regex(@"<TRA.*?\/>");
+            m = r.Match(xml);
+            if (m.Success)
+                xml = xml.Replace(m.Value, "");
             return xml;
         }
 
@@ -196,6 +196,19 @@ namespace DSCore.Utilities
             }
 
             return code;
+        }
+
+        public static Faction GetFaction(string nickname, List<Faction> factions = null)
+        {
+            if (factions == null)
+            {
+                Errors error = Errors.Null;
+                factions = GetDatabaseCollection<Faction>("Factions", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Factions collection.");
+            }
+
+            return factions.Find(x => x.Nickname == nickname);
         }
 
         public enum Endpoints

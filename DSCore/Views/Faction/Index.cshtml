@@ -1,0 +1,52 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<Faction>
+@{
+    ViewData["Title"] = "Factions";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Short Name</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Faction faction in ViewData.Model)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                string value, shortname;
+                                try
+                                {
+                                    value = Infocards.FirstOrDefault(x => x.Key == faction.Name).Value;
+                                    shortname = Infocards.FirstOrDefault(x => x.Key == faction.ShortName).Value;
+                                }
+                                catch { continue; }
+                            }
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{faction.Nickname}")"> @value </a>
+                        </td>
+                        <td>@shortname</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>
