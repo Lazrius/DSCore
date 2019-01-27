@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using DSCore.Api;
 using DSCore.Ini;
 using Microsoft.AspNetCore.Mvc;
 using DSCore.Models;
 using DSCore.Utilities;
-using Newtonsoft.Json;
 
 namespace DSCore.Controllers
 {
@@ -20,65 +13,106 @@ namespace DSCore.Controllers
     {
         public IActionResult Index()
         {
-
-            List<Weapon> weapons = Utils.GetAPIResponse<Weapon[]>(Utils.Endpoints.weapon.ToString()).ToList();
-            Good[] goods = Utils.GetAPIResponse<Good[]>(Utils.Endpoints.good.ToString());
-            Infocard[] infocards = Utils.GetAPIResponse<Infocard[]>(Utils.Endpoints.infocard.ToString());
-            Dictionary<uint, string> infocardPairs = new Dictionary<uint, string>();
-
-            for (var index = 0; index < weapons.Count; index++)
+            Errors error = Errors.Null;
+            try
             {
-                Weapon i = weapons[index];
-                Good good = Array.Find(goods, g => g.Equipment == i.Nickname);
-                if (good == null)
+                var weapons = Utils.GetDatabaseCollection<Weapon>("Weapons", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Commodities collection.");
+
+                var goods = Utils.GetDatabaseCollection<Good>("Goods", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Goods collection.");
+
+                var infocards = Utils.GetDatabaseCollection<Infocard>("Infocards", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Infocards collection.");
+
+                List<Weapon> weaponList = new List<Weapon>();
+                foreach (var i in weapons)
                 {
-                    weapons.RemoveAt(index);
-                    index--;
-                    continue;
+                    Good good = goods.FirstOrDefault(x => x.Nickname == i.Nickname);
+                    if (good == null)
+                        continue;
+
+                    Weapon weapon = i;
+                    i.Price = good.Price;
+                    i.BadBuyPrice = good.BadSellPrice;
+                    i.Combinable = good.Combinable;
+                    i.GoodSellPrice = good.GoodSellPrice;
+                    i.BadSellPrice = good.BadSellPrice;
+                    i.GoodBuyPrice = good.GoodBuyPrice;
+                    weaponList.Add(weapon);
                 }
-                i.Price = good.Price;
-                i.BadBuyPrice = good.BadSellPrice;
-                i.Combinable = good.Combinable;
-                i.GoodSellPrice = good.GoodSellPrice;
-                i.BadSellPrice = good.BadSellPrice;
-                i.GoodBuyPrice = good.GoodBuyPrice;
-                Infocard info = Array.Find(infocards, a => a.Key == i.Name);
-                if (info == null)
-                    continue;
-                infocardPairs[info.Key] = info.Value;
-                weapons[index] = i;
+
+                ViewBag.Infocards = infocards;
+                return View(weaponList);
             }
-
-            ViewBag.Infocards = infocardPairs;
-            return View(weapons);
-
+            catch (Exception ex)
+            {
+                return View("DatabaseError", new PageException(ex, error));
+            }
         }
 
         [HttpGet("{nickname}")]
         public IActionResult Individual(string nickname)
         {
-            Weapon weapon = Utils.GetAPIResponse<Weapon>(Utils.Endpoints.weapon + "/" + nickname);
-            Good good = Utils.GetAPIResponse<Good>(Utils.Endpoints.good + "/" + nickname);
-            Infocard[] infocards = Utils.GetAPIResponse<Infocard[]>(Utils.Endpoints.infocard.ToString());
-            Dictionary<Base, decimal> sellpoints = Utils.GetSellPoint("market/equipment", nickname);
-
-            Dictionary<uint, string> newInfocards = new Dictionary<uint, string>();
-            foreach (var iter in infocards)
+            Errors error = Errors.Null;
+            try
             {
-                if (sellpoints.Keys.FirstOrDefault(x => x.Name == iter.Key || x.Infocard == iter.Key) != null || iter.Key == weapon.Name || iter.Key == weapon.Infocard)
-                    newInfocards[iter.Key] = Utils.XmlToHtml(iter.Value);
+                var weapons = Utils.GetDatabaseCollection<Weapon>("Weapons", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Commodities collection.");
+
+                var goods = Utils.GetDatabaseCollection<Good>("Goods", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Goods collection.");
+
+                var infocards = Utils.GetDatabaseCollection<Infocard>("Infocards", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Infocards collection.");
+
+                var marketEquipment = Utils.GetDatabaseCollection<Market>("MarketsEquipment", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the MarketsEquipment collection.");
+
+                var bases = Utils.GetDatabaseCollection<Base>("Bases", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Bases collection.");
+
+                var systems = Utils.GetDatabaseCollection<Ini.System>("Systems", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Systems collection.");
+
+                Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
+                foreach (var i in marketEquipment)
+                {
+                    if (i.Good.ContainsKey(nickname))
+                        baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == nickname).Value);
+                }
+
+                Dictionary<Base, decimal> sellpoints = new Dictionary<Base, decimal>();
+                foreach (var s in baseList)
+                    sellpoints[bases.First(x => x.Nickname == s.Key)] = s.Value;
+
+                Weapon weapon = weapons.Find(x => x.Nickname == nickname);
+                Good good = goods.Find(x => x.Nickname == nickname);
+                weapon.Price = good.Price;
+                weapon.BadBuyPrice = good.BadSellPrice;
+                weapon.Combinable = good.Combinable;
+                weapon.GoodSellPrice = good.GoodSellPrice;
+                weapon.BadSellPrice = good.BadSellPrice;
+                weapon.GoodBuyPrice = good.GoodBuyPrice;
+
+                ViewBag.Infocards = infocards;
+                ViewBag.Sellpoints = sellpoints;
+                ViewBag.Systems = systems;
+                return View(weapon);
             }
-
-            weapon.Price = good.Price;
-            weapon.BadBuyPrice = good.BadSellPrice;
-            weapon.Combinable = good.Combinable;
-            weapon.GoodSellPrice = good.GoodSellPrice;
-            weapon.BadSellPrice = good.BadSellPrice;
-            weapon.GoodBuyPrice = good.GoodBuyPrice;
-
-            ViewBag.Infocards = newInfocards;
-            ViewBag.Sellpoints = sellpoints;
-            return View("Individual", weapon);
+            catch (Exception ex)
+            {
+                return View("DatabaseError", new PageException(ex, error));
+            }
         }
     }
 }

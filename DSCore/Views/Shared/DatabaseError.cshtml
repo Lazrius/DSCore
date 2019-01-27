@@ -1,0 +1,16 @@
+﻿@model PageException
+@{
+    ViewData["Title"] = "Quoth the Server 404";
+}
+<br/>
+<br/>
+<br/>
+<br/>
+
+<h3>It seems there are some database errors.</h3>
+<p>Without access to the Database, we can't allow you to see the beautiful stats of Discovery's content. 
+    If this hasn't already been reported, and you're sure it's not just on your end, make a post about this
+    on the forums.</p>
+
+<p><strong>Exception Information: </strong> @Model.Exception.Message</p>
+<p><strong>Unique Error Code: </strong> @Model.Error</p>

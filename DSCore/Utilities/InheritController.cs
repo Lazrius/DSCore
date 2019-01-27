@@ -11,8 +11,9 @@ namespace DSCore.Utilities
 {
     public class InheritController : Controller
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
+        /* API Requirement Scrapped - TOO SLOW
+         public override void OnActionExecuting(ActionExecutingContext context)
+         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://localhost:3080");
             request.AllowAutoRedirect = false;
             //request.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -27,6 +28,6 @@ namespace DSCore.Utilities
             }
 
             base.OnActionExecuting(context);
-        }
+        }*/
     }
 }

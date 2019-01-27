@@ -3,7 +3,7 @@
 @model List<Commodity>
 @{
     ViewData["Title"] = "Commodities";
-    Dictionary<uint, string> Infocards = (Dictionary<uint, string>)ViewBag.Infocards;
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
 }
 
 
@@ -51,10 +51,11 @@
                 {
                     <tr>
                         <td>
-                            @{ string value;
-                                Infocards.TryGetValue(commodity.Name, out value);
-                                if (string.IsNullOrEmpty(value))
-                                    { value = "DatabaseError"; }
+                            @{
+                                string value;
+                                try
+                                { value = Infocards.FirstOrDefault(x => x.Key == commodity.Name).Value; }
+                                catch { continue; }
                             }
                             <a href="@($"{ViewContext.HttpContext.Request.Path}/{commodity.Nickname}")"> @value </a>
                         </td>

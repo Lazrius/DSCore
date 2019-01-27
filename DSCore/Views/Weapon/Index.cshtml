@@ -3,7 +3,7 @@
 @model List<Weapon>
 @{
     ViewData["Title"] = "Weapons";
-    Dictionary<uint, string> Infocards = (Dictionary<uint, string>)ViewBag.Infocards;
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
 }
 
 
@@ -65,12 +65,12 @@
                 @foreach (Weapon weapon in ViewData.Model)
                 {
                 <tr>
-                    <td>
-                        @{  float explosionShield = 0, explosionHull = 0, explosionRadius = 0;
+                    <td>@{
                             string value;
-                            Infocards.TryGetValue(weapon.Name, out value);
-                            if (string.IsNullOrEmpty(value))
-                            { value = "DatabaseError"; }
+                            try
+                            { value = Infocards.FirstOrDefault(x => x.Key == weapon.Name).Value; }
+                            catch { continue; }
+                            float explosionShield = 0, explosionHull = 0, explosionRadius = 0;
                             if (weapon.Munition == null)
                             { continue; }
                             if (weapon.Munition.Explosion != null)

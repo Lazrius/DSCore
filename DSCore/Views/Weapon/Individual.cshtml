@@ -1,11 +1,13 @@
 ﻿@using System.Globalization
 @using System.Text.RegularExpressions
 @using DSCore.Ini
+@using DSCore.Utilities
 @model Weapon
 @{
-    Dictionary<uint, string> infocards = (Dictionary<uint, string>)ViewBag.Infocards;
-    Dictionary<Base, decimal> sellpoints = ViewBag.Sellpoints;
-    ViewData["Title"] = infocards[Model.Name];
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
+    List<System> systems = ViewBag.Systems;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
 
@@ -17,7 +19,7 @@
         <br/>
         <h1>TODO: Add icon</h1>
 
-        @Html.Raw(infocards[Model.Infocard])
+        @Html.Raw(Infocards.First(x => x.Key == Model.Infocard).Value)
     </div>
     
     @{
@@ -96,20 +98,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var i in sellpoints)
+                @foreach (var i in Sellpoints)
                 {
-                <tr>
-                    @{
-                        infocards.TryGetValue(i.Key.Name, out var value);
-                        if (string.IsNullOrEmpty(value))
-                        { continue; }
+                    string sellpoint = "";
+                    string value;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
+                        sellpoint += "<tr>";
+                        sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
+                        sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
+                        sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                        sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
+                        sellpoint += $"<td>{Utils.GetGridCode(systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                        sellpoint += "</tr>";
+                        @Html.Raw(sellpoint)
                     }
-                    <td><a href="@($"{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}")">@value</a></td>
-                    <td>@i.Value</td>
-                    <td>@i.Key.System</td>
-                    <td>@i.Key.OwnerFaction</td>
-                    <td>
-                </tr>
+                    catch
+                    { continue; }
                 }
             </tbody>
         </table>
