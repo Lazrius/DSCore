@@ -18,7 +18,7 @@
         <br />
         <h1>TODO: Add icon</h1>
 
-        @Html.Raw(Infocards.First(x => x.Key == Model.Infocard).Value)
+        @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
     </div>
 
     <div class="window window-cell">
