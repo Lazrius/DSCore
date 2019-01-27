@@ -72,6 +72,29 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Infocards collection.");
 
+                var marketCommodities = Utils.GetDatabaseCollection<Market>("MarketsCommodities", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the MarketsCommodities collection.");
+
+                var bases = Utils.GetDatabaseCollection<Base>("Bases", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Bases collection.");
+
+                var systems = Utils.GetDatabaseCollection<Ini.System>("Systems", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Systems collection.");
+
+                Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
+                foreach (var i in marketCommodities)
+                {
+                    if (i.Good.ContainsKey(nickname))
+                        baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == nickname).Value);
+                }
+
+                Dictionary<Base, decimal> sellpoints = new Dictionary<Base, decimal>();
+                foreach (var s in baseList)
+                    sellpoints[bases.First(x => x.Nickname == s.Key)] = s.Value;
+
                 Commodity commodity = commodities.Find(x => x.Nickname == nickname);
                 Good good = goods.Find(x => x.Nickname == nickname);
                 commodity.Price = good.Price;
@@ -81,7 +104,9 @@ namespace DSCore.Controllers
                 commodity.BadSellPrice = good.BadSellPrice;
                 commodity.GoodBuyPrice = good.GoodBuyPrice;
 
-                ViewBag.Infocard = new KeyValuePair<string, string>(infocards.First(x => x.Key == commodity.Name).Value, Utils.XmlToHtml(infocards.First(x => x.Key == commodity.Infocard).Value));
+                ViewBag.Infocards = infocards;
+                ViewBag.Systems = systems;
+                ViewBag.Sellpoints = sellpoints;
                 return View(commodity);
             }
             catch (Exception ex)

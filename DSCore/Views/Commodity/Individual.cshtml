@@ -1,9 +1,12 @@
 ﻿@using System.Text.RegularExpressions
 @using DSCore.Ini
+@using DSCore.Utilities
 @model Commodity
 @{
-    KeyValuePair<string, string> infocard = (KeyValuePair<string, string>)ViewBag.Infocard;
-    ViewData["Title"] = infocard.Key;
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
+    List<System> Systems = ViewBag.Systems;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
 
@@ -11,34 +14,90 @@
 <div class="text-center">
     <div class="window window-cell">
         <h2>@ViewData["Title"]</h2>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <h1>TODO: Add icon</h1>
 
-        @Html.Raw(infocard.Value)
+        @Html.Raw(Infocards.First(x => x.Key == Model.Infocard).Value)
     </div>
-    
+
     <div class="window window-cell">
         <table id="tbl">
             <tbody>
-            <tr>
-                <td>@infocard.Key</td>
-                <td>@Model.Nickname</td>
-                <td>@Model.Price</td>
-                <td>@Model.GoodBuyPrice / @Model.BadBuyPrice</td>
-                <td>@Model.GoodSellPrice / @Model.BadSellPrice</td>
-                <td>@(Model.DecayRate != 0 ? ((Int32) Model.Hitpoints % Model.DecayRate).ToString() : "Not Perishable")</td>
-            </tr>
+                <tr>
+                    <td>@Infocards.First(x => x.Key == Model.Name).Value</td>
+                    <td>@Model.Nickname</td>
+                    <td>@Model.Price</td>
+                    <td>@Model.GoodBuyPrice / @Model.BadBuyPrice</td>
+                    <td>@Model.GoodSellPrice / @Model.BadSellPrice</td>
+                    <td>@(Model.DecayRate != 0 ? ((Int32)Model.Hitpoints % Model.DecayRate).ToString() : "Not Perishable")</td>
+                </tr>
             </tbody>
         </table>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <h1>TODO: Setup base sell points</h1>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <h1>i can't remember why this box exists</h1>
     </div>
-    
+
+    <div class="window">
+        <h1>Sellpoints</h1>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Base Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Location</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Sellpoints)
+                {
+                    string sellpoint = "";
+                    string value;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
+                        sellpoint += "<tr>";
+                        sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
+                        sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
+                        sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                        sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
+                        sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                        sellpoint += "</tr>";
+                        @Html.Raw(sellpoint)
+                    }
+                    catch
+                    { continue; }
+                }
+            </tbody>
+        </table>
+    </div>
+
 </div>

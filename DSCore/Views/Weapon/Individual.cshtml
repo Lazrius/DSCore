@@ -6,7 +6,7 @@
 @{
     List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
     Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
-    List<System> systems = ViewBag.Systems;
+    List<System> Systems = ViewBag.Systems;
     ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
@@ -108,9 +108,9 @@
                         sellpoint += "<tr>";
                         sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
                         sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
-                        sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                        sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
                         sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
-                        sellpoint += $"<td>{Utils.GetGridCode(systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                        sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
                         sellpoint += "</tr>";
                         @Html.Raw(sellpoint)
                     }
