@@ -63,7 +63,7 @@
 
                     string value = Infocards.First(x => x.Key == num).Value;
                     f += "<tr>";
-                    f += $"<td><a href=\"{ViewContext.HttpContext.Request.Host}/base/{i.Key.Trim()}\">{value}</a></td>";
+                    f += $"<td><a href=\"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/faction/{i.Key.Trim()}\">{value}</a></td>";
                     f += $"<td>{i.Value}</td>";
                     f += "</tr>";
                     @Html.Raw(f)

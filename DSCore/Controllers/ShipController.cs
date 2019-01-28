@@ -79,10 +79,14 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Systems collection.");
 
+                var factions = Utils.GetDatabaseCollection<Faction>("Factions", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Factions collection.");
+
                 Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
                 foreach (var i in marketShips)
                 { 
-                    if (i.Good.ContainsKey(nickname))
+                    if (i.Good.ContainsKey(nickname + "_package"))
                         baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == nickname).Value);
                 }
 
@@ -97,6 +101,7 @@ namespace DSCore.Controllers
                 ViewBag.Infocards = infocards;
                 ViewBag.Sellpoints = sellpoints;
                 ViewBag.Systems = systems;
+                ViewBag.Factions = factions;
                 return View(ship);
             }
             catch (Exception ex)

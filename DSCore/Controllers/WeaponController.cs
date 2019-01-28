@@ -84,6 +84,10 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Systems collection.");
 
+                var factions = Utils.GetDatabaseCollection<Faction>("Factions", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the Systems collection.");
+
                 Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
                 foreach (var i in marketEquipment)
                 {
@@ -107,6 +111,7 @@ namespace DSCore.Controllers
                 ViewBag.Infocards = infocards;
                 ViewBag.Sellpoints = sellpoints;
                 ViewBag.Systems = systems;
+                ViewBag.Factions = factions;
                 return View(weapon);
             }
             catch (Exception ex)

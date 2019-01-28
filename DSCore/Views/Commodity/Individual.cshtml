@@ -94,7 +94,7 @@
                     {
                         value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
                         sellpoint += "<tr>";
-                        sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
+                        sellpoint += $"<td><a href=\"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}\">{value}</a></td>";
                         sellpoint += $"<td>{((float)i.Value * Model.Price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))}</td>";
                         sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
                         sellpoint += $"<td>{facName}</td>";

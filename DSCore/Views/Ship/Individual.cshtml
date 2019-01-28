@@ -6,6 +6,7 @@
     List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
     Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
     List<System> Systems = ViewBag.Systems;
+    List<Faction> Factions = ViewBag.Factions;
     ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
@@ -76,12 +77,20 @@
                 string value;
                 try
                 {
+                    Faction fac = Factions.Find(y => y.Nickname.Trim() == i.Key.OwnerFaction.Trim());
+                    uint num;
+                    if (fac.Nickname.Contains("pf_"))
+                    { num = fac.ShortName; }
+                    else
+                    { num = fac.Name; }
+
+                    string facName = Infocards.First(x => x.Key == num).Value;
                     value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
                     sellpoint += "<tr>";
-                    sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
-                    sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
+                    sellpoint += $"<td><a href=\"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}\">{value}</a></td>";
+                    sellpoint += $"<td>{((float)(i.Value == 0 ? 1 : (float)i.Value) * Model.Price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))}</td>";
                     sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
-                    sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
+                    sellpoint += $"<td>{facName}</td>";
                     sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
                     sellpoint += "</tr>";
                     @Html.Raw(sellpoint)
