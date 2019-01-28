@@ -1,4 +1,4 @@
-﻿@using System.Text.RegularExpressions
+﻿@using System.Globalization
 @using DSCore.Ini
 @using DSCore.Utilities
 @model Commodity
@@ -6,6 +6,7 @@
     List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
     Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
     List<System> Systems = ViewBag.Systems;
+    List<Faction> Factions = ViewBag.Factions;
     ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
@@ -22,7 +23,7 @@
     </div>
 
     <div class="window window-cell">
-        <table id="tbl">
+        <table>
             <tbody>
                 <tr>
                     <td>@Infocards.First(x => x.Key == Model.Name).Value</td>
@@ -48,7 +49,7 @@
         <h1>Sellpoints</h1>
         <table>
             <thead>
-                <tr>
+                <tr id="tbl-header">
                     <td>
                         <div class="thead-cell">
                             <a href="#"><span>Base Name</span></a>
@@ -79,6 +80,14 @@
             <tbody>
                 @foreach (var i in Sellpoints)
                 {
+                    Faction fac = Factions.Find(y => y.Nickname.Trim() == i.Key.OwnerFaction.Trim());
+                    uint num;
+                    if (fac.Nickname.Contains("pf_"))
+                    { num = fac.ShortName; }
+                    else
+                    { num = fac.Name; }
+
+                    string facName = Infocards.First(x => x.Key == num).Value;
                     string sellpoint = "";
                     string value;
                     try
@@ -86,9 +95,9 @@
                         value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
                         sellpoint += "<tr>";
                         sellpoint += $"<td><a href=\"({ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname})\">{value}</a></td>";
-                        sellpoint += $"<td>{(float)i.Value * Model.Price}</td>";
+                        sellpoint += $"<td>{((float)i.Value * Model.Price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))}</td>";
                         sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
-                        sellpoint += $"<td>{i.Key.OwnerFaction}</td>";
+                        sellpoint += $"<td>{facName}</td>";
                         sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
                         sellpoint += "</tr>";
                         @Html.Raw(sellpoint)
@@ -99,5 +108,5 @@
             </tbody>
         </table>
     </div>
-
 </div>
+<script src="~/js/grids.js"></script>
