@@ -1,0 +1,80 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<CloakingDevice>
+@{
+    ViewData["Title"] = "Cloaks";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Cloaking Device</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Charge Time</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Disruption Time</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Volume</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Max Cargo Size Supported</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Fuel Consumption</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CloakingDevice cloak in ViewData.Model)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                string value, shortname;
+                                try
+                                {
+                                    value = Infocards.FirstOrDefault(x => x.Key == cloak.Name).Value;
+                                }
+                                catch { continue; }
+                            }
+                            @value
+                        </td>
+                        <td>@(TimeSpan.FromSeconds(Math.Round(cloak.CloakChargeTime / 1000f)).ToString(@"mm\:ss"))</td>
+                        <td>@(TimeSpan.FromSeconds(Math.Round(cloak.DisruptionCooldown / 1000f)).ToString(@"mm\:ss"))</td>
+                        <td>@(cloak.CargoRequirement.ToString("N0", CultureInfo.CurrentCulture))</td>
+                        <td>@(cloak.MaxiumCargoSize.ToString("N0", CultureInfo.CurrentCulture))</td>
+                        <td>
+                            @foreach (var fuel in cloak.FuelRequirements)
+                            {
+                                @(fuel.Key + " - " + fuel.Value + " per second")<br />
+                            }
+                        <br /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

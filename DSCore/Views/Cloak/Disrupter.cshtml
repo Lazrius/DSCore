@@ -1,0 +1,58 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<CloakDisrupter>
+@{
+    ViewData["Title"] = "Disrupters";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Cloak Disrupter</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Range</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Cooldown</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Ammo Requirements</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CloakDisrupter disrupter in ViewData.Model)
+                {
+                    <tr>
+                        <td>@disrupter.Nickname</td>
+                        <td>@(Math.Round(disrupter.Range / 1000f).ToString("N0", CultureInfo.CurrentCulture))k</td>
+                        <td>@(TimeSpan.FromSeconds(disrupter.CooldownTime).ToString(@"mm\:ss")) seconds</td>
+                        <td>
+                            @foreach (var ammo in disrupter.AmmoRequirements)
+                            {
+                                @(ammo.Key + " - " + ammo.Value + " per usage")
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>
