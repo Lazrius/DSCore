@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<programs>
+<program name="wires">
+<vertex-shader><![CDATA[
+attribute vec3 aPosition;
+
+uniform mat4 uProjection;
+uniform mat4 uView;
+uniform mat4 uModel;
+
+void main() {
+	gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
+}
+]]></vertex-shader>
+<fragment-shader><![CDATA[
+precision mediump float;
+
+uniform vec4 uWireColor;
+
+void main() {
+	gl_FragColor = uWireColor;
+}
+]]></fragment-shader>
+</program>
+<program name="glass">
+<vertex-shader><![CDATA[
+
+attribute vec3 aPosition;
+attribute vec3 aNormal;
+attribute vec4 aDiffuse;
+attribute vec2 aUV0;
+attribute vec2 aUV1;
+
+uniform mat4 uProjection;
+uniform mat4 uView;
+uniform mat4 uModel;
+uniform mat3 uNormal;
+
+uniform vec3 uLightColor[6];
+uniform vec3 uLightPosition[6];
+uniform vec3 uAmbientColor;
+uniform vec4 uDiffuseColor;
+uniform int uLightCount;
+
+const vec3 specularColor = vec3(1.0, 1.0, 1.0);
+
+varying vec4 vColor;
+varying vec3 vNormal;
+varying vec4 vDiffuse;
+varying vec2 vUV0;
+varying vec2 vUV1;
+
+void main() {
+	gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
+
+	vec3  lightColor;
+	vec3  normal   = vec3(uNormal * aNormal);
+	float specular = 0.0;
+
+	for (int i = 0; i < 6; i++) {
+		if (i >= uLightCount) break;
+
+		vec3  vertexPosition = vec3(uView * uModel * vec4(aPosition, 1.0));
+		vec3  lightPosition  = vec3(uView * vec4(uLightPosition[i], 1.0));
+		vec3  lightDirection = normalize(lightPosition - vertexPosition);
+		float lambertian     = max(dot(lightDirection, normal), 0.0);
+
+		lightColor += lambertian * uLightColor[i];
+
+		if (lambertian > 0.0) {
+			vec3  reflectDirection = reflect(-lightDirection, normal);
+			vec3  viewDirection    = normalize(-aPosition);
+			float specularAngle    = max(dot(reflectDirection, viewDirection), 0.0);
+			specular              += pow(specularAngle, 16.0);
+		}
+	}
+
+	vColor   = uDiffuseColor;
+	vColor  *= vec4(uAmbientColor + lightColor + specular * specularColor, 1.0);
+	vNormal  = aNormal;
+	vDiffuse = aDiffuse;
+	vUV0     = aUV0;
+	vUV1     = aUV1;
+}
+]]></vertex-shader>
+<fragment-shader><![CDATA[
+precision mediump float;
+
+uniform sampler2D uTexture0;
+uniform sampler2D uTexture1;
+uniform int uTextureMode;
+
+varying vec4 vColor;
+varying vec3 vNormal;
+varying vec4 vDiffuse;
+varying vec2 vUV0;
+varying vec2 vUV1;
+
+void main() {
+	gl_FragColor = vColor;
+}
+]]></fragment-shader>
+</program>
+<program name="standard-vertex">
+<vertex-shader><![CDATA[
+attribute vec3 aPosition;
+attribute vec3 aNormal;
+attribute vec4 aDiffuse;
+attribute vec2 aUV0;
+attribute vec2 aUV1;
+
+uniform mat4 uProjection;
+uniform mat4 uView;
+uniform mat4 uModel;
+uniform mat3 uNormal;
+
+uniform vec3 uLightColor[6];
+uniform vec3 uLightPosition[6];
+uniform vec3 uAmbientColor;
+uniform vec4 uDiffuseColor;
+uniform int uLightCount;
+
+varying vec4 vColor;
+varying vec3 vNormal;
+varying vec4 vDiffuse;
+varying vec2 vUV0;
+varying vec2 vUV1;
+
+void main() {
+	gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
+
+	vec3 lightColor;
+	vec3 normal = vec3(uNormal * aNormal);
+
+	for (int i = 0; i < 6; i++) {
+		if (i >= uLightCount) break;
+
+		vec3  vertexPosition = vec3(uView * uModel * vec4(aPosition, 1.0));
+		vec3  lightPosition  = vec3(uView * vec4(uLightPosition[i], 1.0));
+		vec3  lightDirection = normalize(lightPosition - vertexPosition);
+		float lambertian     = max(dot(lightDirection, normal), 0.0);
+
+		lightColor += lambertian * uLightColor[i];
+	}
+
+	vColor   = uDiffuseColor;
+	vColor  *= vec4(uAmbientColor + lightColor, 1.0);
+	vNormal  = aNormal;
+	vDiffuse = aDiffuse;
+	vUV0     = aUV0;
+	vUV1     = aUV1;
+}
+]]></vertex-shader>
+<fragment-shader><![CDATA[
+precision mediump float;
+
+uniform sampler2D uTexture0;
+uniform sampler2D uTexture1;
+uniform int uTextureMode;
+
+varying vec4 vColor;
+varying vec3 vNormal;
+varying vec4 vDiffuse;
+varying vec2 vUV0;
+varying vec2 vUV1;
+
+void main() {
+	vec4 color = vColor;
+
+	if (uTextureMode >= 1) color *= texture2D(uTexture0, vUV0);
+	if (uTextureMode == 3) color += texture2D(uTexture1, vUV0);
+	if (uTextureMode == 11) color *= vDiffuse;
+	
+	gl_FragColor = color;
+}
+]]></fragment-shader>
+</program>
+</programs>
