@@ -1,0 +1,72 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@using System.Globalization
+@model List<Base>
+@{
+    ViewData["Title"] = "Bases";
+    List<System> Systems = ViewBag.Systems;
+    List<Faction> Factions = ViewBag.Factions;
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Base</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Position</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Owner</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Base b in ViewData.Model)
+                {
+                    if (b.Nickname.Contains("miner")) { continue; }
+                    string value, factionName, systemName;
+                    System system;
+                    Faction faction;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == b.Name).Value;
+                        system = Systems.First(s => s.Nickname == b.System);
+                        systemName = Infocards.First(x => x.Key == system.Name).Value;
+                        faction = Factions.First(s => s.Nickname.Trim() == b.OwnerFaction.Trim());
+                        factionName = Infocards.FirstOrDefault(x => x.Key == faction.Name).Value;
+                    }
+                    catch { continue; }
+
+                    <tr>
+                        <td>
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{b.Nickname}")"> @value </a>
+                        </td>
+                        <td><a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/system/{system.Nickname}")">@systemName</a></td>
+                        <td>@(Utils.GetGridCode(system, b.Position, true))</td>
+                        <td><a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/faction/{faction.Nickname}")">@factionName</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

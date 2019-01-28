@@ -1,0 +1,52 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@model Base
+@{
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    string faction = ViewBag.Faction;
+    List<Ship> Ships = ViewBag.Ships;
+    List<Commodity> Commodities = ViewBag.Commodities;
+    List<System> Systems = ViewBag.Systems;
+    Dictionary<string, List<object>> Equipment = ViewBag.Equipment;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
+}
+
+
+
+<div class="text-center">
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+
+        @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+    </div>
+    
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]'s Bases</h2>
+        
+        
+    </div>
+
+    <div class="window">
+        <h1>Faction Relations</h1>
+        <table>
+            <thead>
+            <tr id="tbl-header">
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>Faction</span></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="thead-cell">
+                        <a href="#"><span>@ViewData["Title"]'s Feelings Towards</span></a>
+                    </div>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>
