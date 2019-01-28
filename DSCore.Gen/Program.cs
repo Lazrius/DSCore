@@ -686,7 +686,7 @@ namespace DSCore.Gen
                                     case "nickname":
                                         cloak.Nickname = ii.Value.ToLower();
                                         break;
-                                    case "warmpup_time":
+                                    case "warmup_time":
                                         cloak.CloakChargeTime = Convert.ToInt32(ii.Value);
                                         break;
                                     case "cooldown_time":
@@ -721,7 +721,7 @@ namespace DSCore.Gen
                                     case "cooldown_time":
                                         disrupter.CooldownTime = Convert.ToInt32(ii.Value);
                                         break;
-                                    case "fuel":
+                                    case "ammo":
                                         var pair = ii.Value.Split(',');
                                         disrupter.AmmoRequirements[pair[0]] = Convert.ToInt32(pair[1]);
                                         break;
