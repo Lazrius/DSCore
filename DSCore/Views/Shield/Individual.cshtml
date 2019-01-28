@@ -1,0 +1,87 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@using System.Globalization
+@model Shield
+@{
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    List<Faction> Factions = (List<Faction>) ViewBag.Factions;
+    List<System> Systems = (List<System>) ViewBag.Systems;
+    Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
+}
+
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+
+        @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+    </div>
+
+    <div class="window">
+        <h1>Sellpoints</h1>
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Base Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Location</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var i in Sellpoints)
+            {
+                try
+                {
+                    string f = "";
+                    Faction fac = Factions.Find(y => y.Nickname.Trim() == i.Key.OwnerFaction.Trim());
+                    uint num;
+                    if (fac.Nickname.Contains("pf_"))
+                    { num = fac.ShortName;}
+                    else
+                    { num = fac.Name;}
+
+                    string basename = Infocards.First(x => x.Key == i.Key.Name).Value;
+                    string value = Infocards.First(x => x.Key == num).Value;
+                    f += "<tr>";
+                    f += $"<td><a href=\"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}\">{basename}</a></td>";
+                    f += $"<td>{((float)i.Value * Model.Price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))}</td>";
+                    f += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                    f += $"<td>{value}</td>";
+                    f += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                    f += "</tr>";
+                    @Html.Raw(f)
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

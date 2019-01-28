@@ -1,0 +1,85 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<Shield>
+@{
+    ViewData["Title"] = "Factions";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Shield</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Shield Type</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Capacity</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Regen Rate</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Offline Time</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Constant Power Draw</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Hitpoints</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Shield shield in ViewData.Model)
+                {
+                    string value;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == shield.Name).Value;
+                    }
+                    catch { continue; }
+                <tr>
+                    <td>
+                        <a href="@($"{ViewContext.HttpContext.Request.Path}/{shield.Nickname}")"> @value </a>
+                    </td>
+                    <td>@shield.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                    <td>@shield.ShieldType.ToString()</td>
+                    <td>@shield.Capacity.ToString("N0")</td>
+                    <td>@shield.RegenRate.ToString("N0")</td>
+                    <td>@TimeSpan.FromSeconds(shield.OfflineTime).ToString(@"mm\:ss")</td>
+                    <td>@shield.PowerDraw.ToString("N0")</td>
+                    <td>@shield.Hitpoints.ToString("N0")</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>
