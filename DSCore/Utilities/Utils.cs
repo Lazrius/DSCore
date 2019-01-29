@@ -146,12 +146,13 @@ namespace DSCore.Utilities
             float[] gridX = new [] { -600000f, -gridSize * 4, -gridSize * 3, -gridSize * 2, -gridSize, gridSize, gridSize * 2, gridSize * 3, gridSize * 4, 600000f };
             float[] gridZ = new[] { -600000f, -gridSize * 4, -gridSize * 3, -gridSize * 2, -gridSize, gridSize, gridSize * 2, gridSize * 3, gridSize * 4, 600000f };
 
-            char xAxis = 'A';
+            // The Decimal value for a capital A is 65. So we want to start of with that.
+            byte xAxis = 65; // A
             for (byte index = 0; index < gridX.Length; index++)
             {
                 if (index + 1 >= gridX.Length)
                 {
-                    xAxis = 'H';
+                    xAxis = 72; // H
                     break;
                 }
                 var x1 = gridX[index];
@@ -159,21 +160,21 @@ namespace DSCore.Utilities
 
                 if (position[0] >= x1 && position[0] <= x2)
                 {
-                    xAxis = index == 0 ? 'A' : (char) Convert.ToByte(index + 64);
+                    xAxis = Convert.ToByte(index + xAxis); // A decimal equivalent of a letter between A-H 
                     break;
                 }
             }
 
             byte yAxis = 1;
-            for (byte index = 0; index < gridZ.Length; index++)
+            for (byte index = 0; index < gridZ.Length; index++) // Loop 10 times. If it's 1 or 10, we set the value to equal 1 and 8 respectivly.
             {
-                if (index + 1 >= gridZ.Length)
+                if (index + 1 >= gridZ.Length) // If we are on the last loop, set the value and return.
                 {
-                    yAxis = 8;
+                    yAxis = 8; // Max value
                     break;
                 }
                 var y1 = gridX[index];
-                var y2 = gridX[index + 1];
+                var y2 = gridX[index + 1]; 
 
                 if (position[2] >= y1 && position[2] <= y2)
                 {
@@ -182,18 +183,20 @@ namespace DSCore.Utilities
                 }
             }
 
-            string code = xAxis.ToString() + yAxis.ToString();
-            if (displayVertical)
+            // Convert the two bytes to a string that is a char, A-H, and a number, 1-8
+            string code = ((char)xAxis) + yAxis.ToString();
+            if (displayVertical) // If we are displaying the vertical pos value, we want to round it to the nearest 1000.
             {
-                float y = position[1] / 1000f;
+                float y = position[1] / 1000f; 
                 bool above = false;
 
-                if (Math.Abs(y) < 1f && Math.Abs(y) > -1f)
-                    return code;
+                if (Math.Abs(y) < 1f && Math.Abs(y) > -1f) // If it's more than -1000 and less than 1000, ignore it.
+                    return code; // Move on
 
                 else if (y > 0)
                     above = true;
 
+                // Round it to the nearest whole number, then write whether it's above or below the plane.
                 code += $" ({(float)Math.Round(y)}k " + (above ? "above" : "below") + " plane)";
             }
 
