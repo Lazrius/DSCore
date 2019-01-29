@@ -132,6 +132,8 @@ namespace DSCore.Utilities
         public static string GetGridCode(Ini.System system, float[] position, bool displayVertical = false)
         {
             decimal scale = system.NavMapScale;
+            if (scale == 0) // Some systems don't have a scale value because by default FL assumes they have the max size of 150k
+                scale = 1;
             // Logic: 
             // FL's NavMapScale divides the default value (which is 150k across the entire grid)
             // by the navmap scale. Stupid, I know.
