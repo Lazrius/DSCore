@@ -128,15 +128,17 @@ namespace DSCore.Controllers
                 }
 
                 // Load in all the ships for this base, if any
-                foreach (var i in marketShips.Find(x => x.Base == nickname).Good)
-                {
-                    Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Key.Replace("_package", ""));
-                    if (ship == null)
-                        continue;
-                    Good good = goods.First(x => x.Nickname == i.Key);
-                    ship.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
-                    sList.Add(ship);
-                }
+                var baseShips = marketShips.Find(x => x.Base == nickname);
+                if (baseShips != null)
+                    foreach (var i in baseShips.Good)
+                    {
+                        Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Key.Replace("_package", ""));
+                        if (ship == null)
+                            continue;
+                        Good good = goods.First(x => x.Nickname == i.Key);
+                        ship.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
+                        sList.Add(ship);
+                    }
 
                 // Load in all the equipment for the base
                 foreach (var i in marketEquipment.Find(x => x.Base == nickname).Good)
@@ -151,7 +153,8 @@ namespace DSCore.Controllers
                         {
                             equip = shields.FirstOrDefault(x => x.Nickname == i.Key);
                             equipType = "Shield";
-                            if (equip.Nickname.Contains("pod")) continue;
+                            if (equip != null)
+                                if (((Shield)equip).Nickname.Contains("pod")) continue;
                         }
 
                         if (equip == null)
