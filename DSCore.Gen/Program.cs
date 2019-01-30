@@ -1461,7 +1461,7 @@ namespace DSCore.Gen
                         if (!i.Keys.Contains("dock_with"))
                             continue;
 
-                        Base iBase = bases.FirstOrDefault(x => string.Equals(x.Nickname, i.Keys["dock_with"].Value, StringComparison.CurrentCultureIgnoreCase));
+                        Base iBase = bases.FirstOrDefault(x => string.Equals(x.Nickname, i.Keys["base"].Value, StringComparison.CurrentCultureIgnoreCase));
                         if (iBase == null)
                             continue;
 
@@ -1483,12 +1483,15 @@ namespace DSCore.Gen
                             continue;
                         }
 
-                        iBase.Infocard = Convert.ToUInt32(i.Keys["ids_name"].Value);
-                        iBase.OwnerFaction = i.Keys["reputation"].Value;
-                        iBase.ArchetypeNickname = i.Keys["archetype"].Value.ToLower();
-                        string[] pos = i.Keys["pos"].Value.Split(",");
-                        iBase.Position = new float[3] { Convert.ToSingle(pos[0]), Convert.ToSingle(pos[1]), Convert.ToSingle(pos[2])};
-                        bases[iPos] = iBase;
+                        try
+                        { // If anything fails here, we're not interested in the base
+                            iBase.Infocard = Convert.ToUInt32(i.Keys["ids_info"].Value);
+                            iBase.OwnerFaction = i.Keys["reputation"].Value;
+                            iBase.ArchetypeNickname = i.Keys["archetype"].Value.ToLower();
+                            string[] pos = i.Keys["pos"].Value.Split(",");
+                            iBase.Position = new float[3] { Convert.ToSingle(pos[0]), Convert.ToSingle(pos[1]), Convert.ToSingle(pos[2]) };
+                            bases[iPos] = iBase;
+                        } catch { }
                     }
                 }
             }
