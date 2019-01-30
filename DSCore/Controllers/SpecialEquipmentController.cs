@@ -9,8 +9,13 @@ using DSCore.Utilities;
 namespace DSCore.Controllers
 {
     [Route("[controller]")]
-    public class CloakController : InheritController
+    public class SpecialEquipmentController : InheritController
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         public IActionResult Cloaks()
         {
             Errors error = Errors.Null;
