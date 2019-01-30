@@ -23,8 +23,9 @@
         
         @foreach (var i in Bases)
         {
+            if (i.Nickname.ToLower().Contains("miner")) { continue; }
             System s = Systems.Find(x => x.Nickname == i.System);
-            <a href="@(ViewContext.HttpContext.Request.Host + "/base/" + i.Nickname)">
+            <a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/base/{i.Nickname}")">
                 <p>@Infocards.First(x => x.Key == i.Name).Value<br/>
                     @Infocards.First(x => x.Key == s.Name).Value - @Utils.GetGridCode(s, i.Position, true)</p>
             </a>
