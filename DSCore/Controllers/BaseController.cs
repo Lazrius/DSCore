@@ -109,31 +109,32 @@ namespace DSCore.Controllers
                     throw new InvalidOperationException("The database was unable to access the Thrusters collection.");
 
                 Base b = bases.Find(x => x.Nickname == nickname);
+                Ini.System system = systems.Find(x => x.Nickname == b.System);
                 var cList = new List<Commodity>();
                 var sList = new List<Ship>();
                 var eList = new Dictionary<string, List<object>>(); // Equipment can be of multiple types
-                eList.Add("shield", new List<object>());
-                eList.Add("thruster", new List<object>());
-                eList.Add("weapon", new List<object>());
-                eList.Add("cm", new List<object>());
+                eList.Add("Shield", new List<object>());
+                eList.Add("Thruster", new List<object>());
+                eList.Add("Weapon", new List<object>());
+                eList.Add("CM", new List<object>());
 
                 // Load in all the commodities for this base
                 foreach (var i in marketCommodities.Find(x => x.Base == nickname).Good)
                 {
                     Commodity commodity = commodities.First(x => x.Nickname == i.Key);
                     Good good = goods.First(x => x.Nickname == i.Key);
-                    commodity.Price = good.Price * (float)i.Value == 0 ? 1 : (float)i.Value;
+                    commodity.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
                     cList.Add(commodity);
                 }
 
                 // Load in all the ships for this base, if any
                 foreach (var i in marketShips.Find(x => x.Base == nickname).Good)
                 {
-                    Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Key);
+                    Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Key.Replace("_package", ""));
                     if (ship == null)
                         continue;
-                    Good good = goods.First(x => x.Nickname.Replace("_package", "") == i.Key);
-                    ship.Price = good.Price * (float)i.Value == 0 ? 1 : (float)i.Value;
+                    Good good = goods.First(x => x.Nickname == i.Key);
+                    ship.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
                     sList.Add(ship);
                 }
 
@@ -144,24 +145,25 @@ namespace DSCore.Controllers
                     {
                         string equipType;
                         dynamic equip = weapons.FirstOrDefault(x => x.Nickname == i.Key);
-                        equipType = "weapon";
+                        equipType = "Weapon";
 
                         if (equip == null)
                         {
                             equip = shields.FirstOrDefault(x => x.Nickname == i.Key);
-                            equipType = "shield";
+                            equipType = "Shield";
+                            if (equip.Nickname.Contains("pod")) continue;
                         }
 
                         if (equip == null)
                         {
-                            equipType = "thruster";
+                            equipType = "Thruster";
                             equip = thrusters.FirstOrDefault(x => x.Nickname == i.Key);
                         }
                             
 
                         if (equip == null)
                         {
-                            equipType = "cm";
+                            equipType = "CM";
                             equip = cms.FirstOrDefault(x => x.Nickname == i.Key);
                         }
                             
@@ -170,14 +172,14 @@ namespace DSCore.Controllers
                             continue;
 
                         Good good = goods.First(x => x.Nickname == i.Key);
-                        equip.Price = good.Price * (float)i.Value == 0 ? 1 : (float)i.Value;
+                        equip.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
                         eList[equipType].Add((object)equip);
                     } catch { continue;  }
                 }
 
                 string faction = infocards.First(x => x.Key == factions.First(y => y.Nickname.Trim() == b.OwnerFaction.Trim()).Name).Value;
 
-                ViewBag.Systems = systems;
+                ViewBag.System = system;
                 ViewBag.Infocards = infocards;
                 ViewBag.Faction = faction;
                 ViewBag.Ships = sList;

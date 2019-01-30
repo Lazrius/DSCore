@@ -1,52 +1,135 @@
 ﻿@using DSCore.Ini
 @using DSCore.Utilities
+@using System.Globalization
 @model Base
 @{
     List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
     string faction = ViewBag.Faction;
     List<Ship> Ships = ViewBag.Ships;
     List<Commodity> Commodities = ViewBag.Commodities;
-    List<System> Systems = ViewBag.Systems;
+    System System = ViewBag.System;
     Dictionary<string, List<object>> Equipment = ViewBag.Equipment;
     ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
 }
 
-
-
 <div class="text-center">
-    <div class="window window-cell">
-        <h2>@ViewData["Title"]</h2>
+    <div class="window">
+        <h2>@ViewData["Title"]'s Information</h2>
 
         @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+
+        <div class="text-left">
+            <span>Nickname: </span> @Model.Nickname <br />
+            <span>Archetype: </span> @Model.ArchetypeNickname<br />
+            <span>System: </span>@Infocards.Find(x => x.Key == System.Name).Value<br />
+            <span>Location: </span>@Utils.GetGridCode(System, Model.Position, true)<br />
+            <span>Owner: </span>@faction<br />
+            <br />
+
+            @foreach (Ship ship in Ships)
+            {
+                <span>
+                    <a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
+                    $"Ship/{ship.Nickname}")">@Infocards.First(x => x.Key == ship.Name).Value</a>
+                </span>
+                @Html.Raw("  -  ")
+                @ship.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) @Html.Raw(" credits")
+                <br />
+            }
+            <br />
+            <span>TODO: Loop over bribes offered here: </span><br />
+        </div>
     </div>
     
     <div class="window window-cell">
-        <h2>@ViewData["Title"]'s Bases</h2>
-        
-        
-    </div>
-
-    <div class="window">
-        <h1>Faction Relations</h1>
+        <h2>@ViewData["Title"]'s Equipment</h2>
         <table>
             <thead>
-            <tr id="tbl-header">
-                <td>
-                    <div class="thead-cell">
-                        <a href="#"><span>Faction</span></a>
-                    </div>
-                </td>
-                <td>
-                    <div class="thead-cell">
-                        <a href="#"><span>@ViewData["Title"]'s Feelings Towards</span></a>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Type</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                </tr>
             </thead>
             <tbody>
-            
+                @foreach (var equip in Equipment)
+                {
+                    foreach (Good item in equip.Value)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
+                                    $"{equip.Key}/{item.Nickname}")">@Infocards.First(x => x.Key == item.Name).Value</a>
+                            </td>
+                            <td>@equip.Key</td>
+                            <td>@item.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
+
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]'s Commodities</h2>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Cargo Per Unit</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Sold By Base</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Commodity commodity in Commodities)
+                {
+                    <tr>
+                        <td>
+                            <a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
+                                $"Commodity/{commodity.Nickname}")">@Infocards.First(x => x.Key == commodity.Name).Value</a>
+                        </td>
+                        <td>@commodity.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                        <td>@commodity.CargoSpaceRequired</td>
+                        <td>TODO: Base sells y/n</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="window">
+        <h2>Local News at @ViewData["Title"]</h2>
+
+        TODO: loop over all the news here
+    </div> 
 </div>
 <script src="~/js/grids.js"></script>
