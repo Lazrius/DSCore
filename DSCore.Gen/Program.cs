@@ -1495,6 +1495,32 @@ namespace DSCore.Gen
                     }
                 }
             }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"\INTERFACE\Infocardmap.ini");
+            // We sometimes have duplicates, and need to make sure those cases are handled.
+            List<uint> processedNumbers = new List<uint>();
+            foreach (var key in ini.Sections["InfocardMapTable"].Keys)
+            {
+                if (key.Name == "Map")
+                {
+                    uint[] arr = Array.ConvertAll(key.Value.Split(","), i => uint.Parse(i));
+                    if (processedNumbers.Any(x => x == arr[0]))
+                        continue; // If we've already done it, go to the next one
+
+                    int index = bases.FindIndex(x => x.Infocard == arr[0]);
+                    if (index == -1)
+                    {
+                        Console.WriteLine($"Base infocard missing from base list. Number: {arr[0]}");
+                        continue;
+                    }
+
+                    Base iBase = bases[index];
+                    iBase.Infocard = arr[1]; // Reassign the infocard
+                    bases[index] = iBase; // Replace the old one
+                    processedNumbers.Add(arr[0]); // Make sure we don't repeat for duplicates
+                }
+            }
         }
     }
 }
