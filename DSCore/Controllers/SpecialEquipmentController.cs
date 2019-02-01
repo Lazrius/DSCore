@@ -16,6 +16,7 @@ namespace DSCore.Controllers
             return View();
         }
 
+        [HttpGet("cloaks")]
         public IActionResult Cloaks()
         {
             Errors error = Errors.Null;
@@ -38,19 +39,34 @@ namespace DSCore.Controllers
             }
         }
 
-        [HttpGet("disrupter")]
+        [HttpGet("disrupters")]
         public IActionResult Disrupters()
         {
             Errors error = Errors.Null;
             try
             {
+                var droppers = Utils.GetDatabaseCollection<CountermeasureDropper>("CMs", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the CMs collection.");
+
                 var disrupters = Utils.GetDatabaseCollection<CloakDisrupter>("Disrupters", ref error);
                 if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Cloaks collection.");
+                    throw new InvalidOperationException("The database was unable to access the Disrupters collection.");
 
                 var infocards = Utils.GetDatabaseCollection<Infocard>("Infocards", ref error);
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Infocards collection.");
+
+                for (int i = 0; i < disrupters.Count; i++)
+                {
+                    CloakDisrupter dis = disrupters[i];
+                    var dropper = droppers.FirstOrDefault(x => x.Nickname == dis.Nickname);
+                    if (dropper != null)
+                    {
+                        dis.Name = dropper.Name;
+                        disrupters[i] = dis;
+                    }
+                }
 
                 ViewBag.Infocards = infocards;
                 return View("Disrupter", disrupters);

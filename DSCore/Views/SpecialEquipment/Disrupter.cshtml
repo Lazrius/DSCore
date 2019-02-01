@@ -40,7 +40,7 @@
                 @foreach (CloakDisrupter disrupter in ViewData.Model)
                 {
                     <tr>
-                        <td>@disrupter.Nickname</td>
+                        <td>@Infocards.First(x => x.Key == disrupter.Name).Value</td>
                         <td>@(Math.Round(disrupter.Range / 1000f).ToString("N0", CultureInfo.CurrentCulture))k</td>
                         <td>@(TimeSpan.FromSeconds(disrupter.CooldownTime).ToString(@"mm\:ss")) seconds</td>
                         <td>
