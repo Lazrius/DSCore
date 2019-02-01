@@ -32,7 +32,7 @@
                 <span>Hitpoints: </span>@(Model.Hitpoints.ToString("N0"))<br />
                 <span>Nanobots: </span>@(Model.Nanobots.ToString("N0"))<br />
                 <span>Shield Bats: </span>@(Model.ShieldBats.ToString("N0"))<br />
-                @try { <span>Powercore: </span> @Model.Powerplant.Capacity / @Model.Powerplant.ChargeRate <br /> } catch { }
+                @try { <span>Powercore: </span> @Model.Powerplant.Capacity; @Html.Raw(" /" ); @Model.Powerplant.ChargeRate; <br /> } catch { }
                 @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
             </p>
         </div>
