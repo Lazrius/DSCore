@@ -7,6 +7,7 @@ using LibreLancer.Data;
 using LiteDB;
 using DSCore.Ini;
 using MadMilkman.Ini;
+using System.Text.RegularExpressions;
 
 namespace DSCore.Gen
 {
@@ -118,381 +119,76 @@ namespace DSCore.Gen
 
             Console.WriteLine("Processed Commodities and Armour.");
 
-            #region Goods
-
+            // Ships
             ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\goods.ini");
-            Dictionary<string, float> shipHulls = new Dictionary<string, float>();
-            Dictionary<string, Good> shipsGoods = new Dictionary<string, Good>();
-            foreach (IniSection i in ini.Sections)
-            {
-                Good good = new Good();
-                string category = "";
-                string hull = "";
-                foreach (IniKey ii in i.Keys)
-                {
-                    switch (ii.Name.ToLower())
-                    {
-                        case "nickname":
-                            // Horrible edge case right here
-                            if (ii.Value.ToLower().Contains("rm_") && !ii.Value.ToLower().Contains("rm_h"))
-                                break;
-                            good.Nickname = ii.Value.ToLower();
-                            break;
-
-                        case "category":
-                            category = ii.Value;
-                            break;
-
-                        case "hull":
-                            hull = ii.Value;
-                            break;
-
-                        case "equipment":
-                            good.Equipment = ii.Value;
-                            break;
-
-                        case "combinable":
-                            good.Combinable = Boolean.Parse(ii.Value);
-                            break;
-
-                        case "price":
-                            good.Price = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_sell_price":
-                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_sell_price":
-                            good.BadSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_buy_price":
-                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_buy_price":
-                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-                    }
-                }
-
-                if ((good.GoodBuyPrice == 0 || string.IsNullOrEmpty(good.Equipment) || good.GoodSellPrice == 0) && category == "commodity")
-                    continue;
-
-                if (category == "ship")
-                {
-                    shipsGoods[hull] = good;
-                    continue;
-                }
-
-                else if (category == "shiphull")
-                {
-                    shipHulls[good.Nickname] = good.Price;
-                    continue;
-                }
-
-                goods.Add(good);
-            }
-
-            for (var i = 0; i <= shipsGoods.Count - 1; i++)
-            {
-                try
-                {
-                    var pair = shipsGoods.ElementAt(i);
-                    Good good = pair.Value;
-                    good.Price = shipHulls[pair.Key];
-                    goods.Add(good);
-                }
-
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Invalid ShipGood Entry: " + ex.Message);
-                }
-            }
-
-            ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\engine_good.ini");
-            foreach (IniSection i in ini.Sections)
-            {
-                Good good = new Good();
-                foreach (IniKey ii in i.Keys)
-                {
-                    if (ii.Name == "category" && ii.Value.Contains("ship"))
-                        break;
-
-                    switch (ii.Name.ToLower())
-                    {
-                        case "nickname":
-                            good.Nickname = ii.Value.ToLower();
-                            break;
-
-                        case "equipment":
-                            good.Equipment = ii.Value;
-                            break;
-
-                        case "combinable":
-                            good.Combinable = Boolean.Parse(ii.Value);
-                            break;
-
-                        case "price":
-                            good.Price = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_sell_price":
-                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_sell_price":
-                            good.BadSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_buy_price":
-                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_buy_price":
-                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-                    }
-
-                    
-                }
-                goods.Add(good);
-            }
-
-            ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\weapon_good.ini");
-            foreach (IniSection i in ini.Sections)
-            {
-                Good good = new Good();
-                foreach (IniKey ii in i.Keys)
-                {
-                    if (ii.Name == "category" && ii.Value.Contains("ship"))
-                        break;
-
-                    switch (ii.Name.ToLower())
-                    {
-                        case "nickname":
-                            good.Nickname = ii.Value.ToLower();
-                            break;
-
-                        case "equipment":
-                            good.Equipment = ii.Value;
-                            break;
-
-                        case "combinable":
-                            good.Combinable = Boolean.Parse(ii.Value);
-                            break;
-
-                        case "price":
-                            good.Price = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_sell_price":
-                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_sell_price":
-                            good.BadSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_buy_price":
-                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_buy_price":
-                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-                    }
-
-                    
-                }
-                goods.Add(good);
-            }
-
-            ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\misc_good.ini");
-            foreach (IniSection i in ini.Sections)
-            {
-                Good good = new Good();
-                foreach (IniKey ii in i.Keys)
-                {
-                    if (ii.Name == "category" && ii.Value.Contains("ship"))
-                        break;
-
-                    switch (ii.Name.ToLower())
-                    {
-                        case "nickname":
-                            good.Nickname = ii.Value.ToLower();
-                            break;
-
-                        case "equipment":
-                            good.Equipment = ii.Value;
-                            break;
-
-                        case "combinable":
-                            good.Combinable = Boolean.Parse(ii.Value);
-                            break;
-
-                        case "price":
-                            good.Price = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_sell_price":
-                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_sell_price":
-                            good.BadSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_buy_price":
-                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_buy_price":
-                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-                    }
-
-                    
-                }
-                goods.Add(good);
-            }
-
-            ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\st_good.ini");
-            foreach (IniSection i in ini.Sections)
-            {
-                Good good = new Good();
-                foreach (IniKey ii in i.Keys)
-                {
-                    if (ii.Name == "category" && ii.Value.Contains("ship"))
-                        break;
-
-                    switch (ii.Name.ToLower())
-                    {
-                        case "nickname":
-                            good.Nickname = ii.Value.ToLower();
-                            break;
-
-                        case "equipment":
-                            good.Equipment = ii.Value;
-                            break;
-
-                        case "combinable":
-                            good.Combinable = Boolean.Parse(ii.Value);
-                            break;
-
-                        case "price":
-                            good.Price = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_sell_price":
-                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_sell_price":
-                            good.BadSellPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "good_buy_price":
-                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-
-                        case "bad_buy_price":
-                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
-                            break;
-                    }
-
-                    
-                }
-                goods.Add(good);
-            }
-
-            #endregion
-
-            // Thrusters and Shields
-            ini = new IniFile(iniOptions);
-            ini.Load(equip + @"\st_equip.ini");
+            ini.Load(data + @"\SHIPS\shiparch.ini");
             foreach (IniSection i in ini.Sections)
             {
                 switch (i.Name.ToLower())
                 {
-                    case "thruster":
-                        Thruster thruster = new Thruster();
+                    case "ship":
+                        Ship ship = new Ship();
                         foreach (var ii in i.Keys)
                         {
-                            switch (ii.Name)
+                            switch (ii.Name.ToLower())
                             {
                                 case "nickname":
-                                    thruster.Nickname = ii.Value.ToLower();
+                                    ship.Nickname = ii.Value.ToLower();
                                     break;
                                 case "ids_name":
-                                    thruster.Name = Convert.ToUInt32(ii.Value);
+                                    ship.Name = Convert.ToUInt32(ii.Value);
                                     break;
-                                case "ids_info":
-                                    thruster.Infocard = Convert.ToUInt32(ii.Value);
+                                case "ids_info1":
+                                    ship.Infocard = Convert.ToUInt32(ii.Value);
                                     break;
-                                case "max_force":
-                                    thruster.MaxForce = Convert.ToSingle(ii.Value);
+                                case "hold_size":
+                                    ship.CargoSize = Convert.ToInt32(ii.Value);
                                     break;
-                                case "power_usage":
-                                    thruster.PowerUsage = Convert.ToSingle(ii.Value);
+                                case "strafe_force":
+                                    ship.StrafeForce = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "nudge_force":
+                                    ship.NudgeForce = Convert.ToSingle(ii.Value);
                                     break;
                                 case "hit_pts":
-                                    thruster.Hitpoints = Convert.ToSingle(ii.Value);
+                                    ship.Hitpoints = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "ship_class":
+                                    ship.ShipClass = (ShipClass)Convert.ToInt32(ii.Value);
+                                    break;
+                                case "nanobot_limit":
+                                    ship.Nanobots = Convert.ToInt32(ii.Value);
+                                    break;
+                                case "shield_battery_limit":
+                                    ship.ShieldBats = Convert.ToInt32(ii.Value);
+                                    break;
+                                case "da_archetype":
+                                    ship.CmpFile = ii.Value;
+                                    break;
+                                case "material_library":
+                                    if (string.IsNullOrEmpty(ship.MatFile))
+                                        ship.MatFile = ii.Value;
                                     break;
                             }
                         }
 
-                        thrusters.Add(thruster);
-                        break;
-
-                    case "shieldgenerator":
-                        Shield shield = new Shield();
-                        foreach (var ii in i.Keys)
-                        {
-                            switch (ii.Name)
-                            {
-                                case "nickname":
-                                    shield.Nickname = ii.Value.ToLower();
-                                    break;
-                                case "ids_name":
-                                    shield.Name = Convert.ToUInt32(ii.Value);
-                                    break;
-                                case "ids_info":
-                                    shield.Infocard = Convert.ToUInt32(ii.Value);
-                                    break;
-                                case "shield_type":
-                                    shield.ShieldType = TypeFunctions.GetShieldType(ii.Value);
-                                    break;
-                                case "hit_pts":
-                                    shield.Hitpoints = Convert.ToSingle(ii.Value);
-                                    break;
-                                case "offline_rebuild_time":
-                                    shield.OfflineTime = Convert.ToInt32(ii.Value);
-                                    break;
-                                case "constant_power_draw":
-                                    shield.PowerDraw = Convert.ToInt32(ii.Value);
-                                    break;
-                                case "max_capacity":
-                                    shield.Capacity = Convert.ToSingle(ii.Value);
-                                    break;
-                                case "regeneration_rate":
-                                    shield.RegenRate = Convert.ToSingle(ii.Value);
-                                    break;
-                            }
-                        }
-
-                        shields.Add(shield);
+                        ships.Add(ship);
                         break;
                 }
             }
 
-            Console.WriteLine("Processed Thrusters and Shields.");
+            Console.WriteLine("Copying Ship CMP/MAT files.");
+            foreach (Ship ship in ships)
+            {
+                if (string.IsNullOrEmpty(ship.CmpFile) || string.IsNullOrEmpty(ship.MatFile))
+                    continue;
+                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.CmpFile));
+                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.MatFile));
+                File.Copy(data + @"\" + ship.CmpFile, output + @"\DATA\" + ship.CmpFile, true);
+                File.Copy(data + @"\" + ship.MatFile, output + @"\DATA\" + ship.MatFile, true);
+            }
+
+            Console.WriteLine("Processed Ships.");
 
             // Scanners and Powerplants. and CMs (this file also does IDs, but we're ignoging them for now)
             ini = new IniFile(iniOptions);
@@ -627,6 +323,390 @@ namespace DSCore.Gen
             }
             tempcmlist = null;
 
+            #region Goods
+
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\goods.ini");
+            // Ship hull nickname - price - powercore for that ship (nickname)
+            Dictionary<string, float> shipHulls = new Dictionary<string, float>();
+            Dictionary<string, KeyValuePair<string, Good>> shipsGoods = new Dictionary<string, KeyValuePair<string, Good>>();
+            foreach (IniSection i in ini.Sections)
+            {
+                Good good = new Good();
+                string category = "";
+                string hull = "";
+                string power = "";
+                foreach (IniKey ii in i.Keys)
+                {
+                    switch (ii.Name.ToLower())
+                    {
+                        case "nickname":
+                            // Horrible edge case right here
+                            if (ii.Value.ToLower().Contains("rm_") && !ii.Value.ToLower().Contains("rm_h"))
+                                break;
+                            good.Nickname = ii.Value.ToLower().Trim();
+                            break;
+
+                        case "category":
+                            category = ii.Value.Trim();
+                            break;
+
+                        case "hull":
+                            hull = ii.Value.ToLower().Trim();
+                            break;
+
+                        case "addon":
+                            if (ii.Value.ToLower().Trim().Contains("power"))
+                                power = ii.Value.ToLower().Trim();
+                            break;
+
+                        case "combinable":
+                            good.Combinable = Boolean.Parse(ii.Value);
+                            break;
+
+                        case "price":
+                            good.Price = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_sell_price":
+                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_sell_price":
+                            good.BadSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_buy_price":
+                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_buy_price":
+                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+                    }
+                }
+
+                if ((good.GoodBuyPrice == 0 || good.GoodSellPrice == 0) && category == "commodity")
+                    continue;
+
+                if (category == "ship")
+                {
+                    if (!string.IsNullOrEmpty(power))
+                        shipsGoods[hull] = new KeyValuePair<string, Good>(power, good);
+                    continue;
+                }
+
+                else if (category == "shiphull")
+                {
+                    shipHulls[good.Nickname] = good.Price;
+                    continue;
+                }
+
+                if (good.Nickname != null)
+                    goods.Add(good);
+            }
+
+            for (var i = 1; i <= shipsGoods.Count; i++)
+            {
+                try
+                {
+                    var pair = shipsGoods.ElementAt(i);
+                    Good good = pair.Value.Value;
+                    good.Nickname = good.Nickname.Replace("_package", "");
+                    good.Price = shipHulls[pair.Key];
+                    good.Powerplant = pair.Value.Key;
+                    goods.Add(good);
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Invalid ShipGood Entry: " + ex.Message);
+                }
+            }
+
+            for (var index = 1; index <= ships.Count; index++)
+            {
+                try
+                {
+                    Ship ship = ships.ElementAt(index);
+                    if (marketShips.FindIndex(x => x.Good.Any(y => y.Key == ship.Nickname)) == -1)
+                        continue;
+                    ship.Powerplant = powerplants.Find(x => x.Nickname == goods.Find(y => y.Nickname == ship.Nickname).Powerplant);
+                    ships[index] = ship;
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Unable to get powerplant: " + ex.Message);
+                }
+            }
+
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\engine_good.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                Good good = new Good();
+                foreach (IniKey ii in i.Keys)
+                {
+                    if (ii.Name == "category" && ii.Value.Contains("ship"))
+                        break;
+
+                    switch (ii.Name.ToLower())
+                    {
+                        case "nickname":
+                            good.Nickname = ii.Value.ToLower();
+                            break;
+
+                        case "combinable":
+                            good.Combinable = Boolean.Parse(ii.Value);
+                            break;
+
+                        case "price":
+                            good.Price = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_sell_price":
+                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_sell_price":
+                            good.BadSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_buy_price":
+                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_buy_price":
+                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+                    }
+
+                    
+                }
+                goods.Add(good);
+            }
+
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\weapon_good.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                Good good = new Good();
+                foreach (IniKey ii in i.Keys)
+                {
+                    if (ii.Name == "category" && ii.Value.Contains("ship"))
+                        break;
+
+                    switch (ii.Name.ToLower())
+                    {
+                        case "nickname":
+                            good.Nickname = ii.Value.ToLower();
+                            break;
+
+                        case "combinable":
+                            good.Combinable = Boolean.Parse(ii.Value);
+                            break;
+
+                        case "price":
+                            good.Price = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_sell_price":
+                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_sell_price":
+                            good.BadSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_buy_price":
+                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_buy_price":
+                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+                    }
+
+                    
+                }
+                goods.Add(good);
+            }
+
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\misc_good.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                Good good = new Good();
+                foreach (IniKey ii in i.Keys)
+                {
+                    if (ii.Name == "category" && ii.Value.Contains("ship"))
+                        break;
+
+                    switch (ii.Name.ToLower())
+                    {
+                        case "nickname":
+                            good.Nickname = ii.Value.ToLower();
+                            break;
+
+                        case "combinable":
+                            good.Combinable = Boolean.Parse(ii.Value);
+                            break;
+
+                        case "price":
+                            good.Price = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_sell_price":
+                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_sell_price":
+                            good.BadSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_buy_price":
+                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_buy_price":
+                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+                    }
+
+                    
+                }
+                goods.Add(good);
+            }
+
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\st_good.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                Good good = new Good();
+                foreach (IniKey ii in i.Keys)
+                {
+                    if (ii.Name == "category" && ii.Value.Contains("ship"))
+                        break;
+
+                    switch (ii.Name.ToLower())
+                    {
+                        case "nickname":
+                            good.Nickname = ii.Value.ToLower();
+                            break;
+
+                        case "combinable":
+                            good.Combinable = Boolean.Parse(ii.Value);
+                            break;
+
+                        case "price":
+                            good.Price = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_sell_price":
+                            good.GoodSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_sell_price":
+                            good.BadSellPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "good_buy_price":
+                            good.GoodBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+
+                        case "bad_buy_price":
+                            good.BadBuyPrice = Convert.ToSingle(ii.Value);
+                            break;
+                    }
+
+                    
+                }
+                goods.Add(good);
+            }
+
+            #endregion
+
+            // Thrusters and Shields
+            ini = new IniFile(iniOptions);
+            ini.Load(equip + @"\st_equip.ini");
+            foreach (IniSection i in ini.Sections)
+            {
+                switch (i.Name.ToLower())
+                {
+                    case "thruster":
+                        Thruster thruster = new Thruster();
+                        foreach (var ii in i.Keys)
+                        {
+                            switch (ii.Name)
+                            {
+                                case "nickname":
+                                    thruster.Nickname = ii.Value.ToLower();
+                                    break;
+                                case "ids_name":
+                                    thruster.Name = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "ids_info":
+                                    thruster.Infocard = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "max_force":
+                                    thruster.MaxForce = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "power_usage":
+                                    thruster.PowerUsage = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "hit_pts":
+                                    thruster.Hitpoints = Convert.ToSingle(ii.Value);
+                                    break;
+                            }
+                        }
+
+                        thrusters.Add(thruster);
+                        break;
+
+                    case "shieldgenerator":
+                        Shield shield = new Shield();
+                        foreach (var ii in i.Keys)
+                        {
+                            switch (ii.Name)
+                            {
+                                case "nickname":
+                                    shield.Nickname = ii.Value.ToLower();
+                                    break;
+                                case "ids_name":
+                                    shield.Name = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "ids_info":
+                                    shield.Infocard = Convert.ToUInt32(ii.Value);
+                                    break;
+                                case "shield_type":
+                                    shield.ShieldType = TypeFunctions.GetShieldType(ii.Value);
+                                    break;
+                                case "hit_pts":
+                                    shield.Hitpoints = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "offline_rebuild_time":
+                                    shield.OfflineTime = Convert.ToInt32(ii.Value);
+                                    break;
+                                case "constant_power_draw":
+                                    shield.PowerDraw = Convert.ToInt32(ii.Value);
+                                    break;
+                                case "max_capacity":
+                                    shield.Capacity = Convert.ToSingle(ii.Value);
+                                    break;
+                                case "regeneration_rate":
+                                    shield.RegenRate = Convert.ToSingle(ii.Value);
+                                    break;
+                            }
+                        }
+
+                        shields.Add(shield);
+                        break;
+                }
+            }
+
+            Console.WriteLine("Processed Thrusters and Shields.");
+
             // Factions
             ini = new IniFile(iniOptions);
             ini.Load(data + @"\initialworld.ini");
@@ -734,78 +814,6 @@ namespace DSCore.Gen
                 }
                 Console.WriteLine("Processed Cloaks and Disrupters.");
             }
-
-
-            // Ships
-            ini = new IniFile(iniOptions);
-            ini.Load(data + @"\SHIPS\shiparch.ini");
-            foreach (IniSection i in ini.Sections)
-            {
-                switch (i.Name.ToLower())
-                {
-                    case "ship":
-                        Ship ship = new Ship();
-                        foreach (var ii in i.Keys)
-                        {
-                            switch (ii.Name.ToLower())
-                            {
-                                case "nickname":
-                                    ship.Nickname = ii.Value.ToLower();
-                                    break;
-                                case "ids_name":
-                                    ship.Name = Convert.ToUInt32(ii.Value);
-                                    break;
-                                case "ids_info1":
-                                    ship.Infocard = Convert.ToUInt32(ii.Value);
-                                    break;
-                                case "hold_size":
-                                    ship.CargoSize = Convert.ToInt32(ii.Value);
-                                    break;
-                                case "strafe_force":
-                                    ship.StrafeForce = Convert.ToSingle(ii.Value);
-                                    break;
-                                case "nudge_force":
-                                    ship.NudgeForce = Convert.ToSingle(ii.Value);
-                                    break;
-                                case "hit_pts":
-                                    ship.Hitpoints = Convert.ToSingle(ii.Value);
-                                    break;
-                                case "ship_class":
-                                    ship.ShipClass = (ShipClass) Convert.ToInt32(ii.Value);
-                                    break;
-                                case "nanobot_limit":
-                                    ship.Nanobots = Convert.ToInt32(ii.Value);
-                                    break;
-                                case "shield_battery_limit":
-                                    ship.ShieldBats = Convert.ToInt32(ii.Value);
-                                    break;
-                                case "da_archetype":
-                                    ship.CmpFile = ii.Value;
-                                    break;
-                                case "material_library":
-                                    if (string.IsNullOrEmpty(ship.MatFile))
-                                        ship.MatFile = ii.Value;
-                                    break;
-                            }
-                        }
-
-                        ships.Add(ship);
-                        break;
-                }
-            }
-
-            Console.WriteLine("Copying Ship CMP/MAT files.");
-            foreach (Ship ship in ships)
-            {
-                if (string.IsNullOrEmpty(ship.CmpFile) || string.IsNullOrEmpty(ship.MatFile))
-                    continue;
-                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.CmpFile));
-                Directory.CreateDirectory(output + @"\DATA\" + Path.GetDirectoryName(ship.MatFile));
-                File.Copy(data + @"\" + ship.CmpFile, output + @"\DATA\" + ship.CmpFile, true);
-                File.Copy(data + @"\" + ship.MatFile, output + @"\DATA\" + ship.MatFile, true);
-            }
-
-            Console.WriteLine("Processed Ships.");
 
             // Weapons
             ini = new IniFile(iniOptions);
@@ -1066,7 +1074,6 @@ namespace DSCore.Gen
                 var dbMarketsCommodities = db.GetCollection<Market>("MarketsCommodities");
                 var dbMarketsEquipment = db.GetCollection<Market>("MarketsEquipment");
                 var dbMarketsShips = db.GetCollection<Market>("MarketsShips");
-                var dbPowerplants = db.GetCollection<Powerplant>("Powerplants");
                 var dbScanners = db.GetCollection<Scanner>("Scanners");
                 var dbShields = db.GetCollection<Shield>("Shields");
                 var dbShips = db.GetCollection<Ship>("Ships");
@@ -1088,7 +1095,6 @@ namespace DSCore.Gen
                 InsertToDatabase(dbMarketsCommodities, marketCommodities, "MarketsCommodities");
                 InsertToDatabase(dbMarketsEquipment, marketEquipment, "MarketsEquipment");
                 InsertToDatabase(dbMarketsShips, marketShips, "MarketsShips");
-                InsertToDatabase(dbPowerplants, powerplants, "Powerplants");
                 InsertToDatabase(dbScanners, scanners, "Scanners");
                 InsertToDatabase(dbShields, shields, "Shields");
                 InsertToDatabase(dbShips, ships, "Ships");
@@ -1268,11 +1274,11 @@ namespace DSCore.Gen
                                 string[] arr = ii.Value.Split(",");
                                 if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
                                 {
-                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    market.Good[arr[0].ToLower().Replace("_package", "")] = Convert.ToDecimal(arr[6]);
                                     break;
                                 }
 
-                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                market.Good.Add(arr[0].ToLower().Replace("_package", ""), Convert.ToDecimal(arr[6]));
                                 break;
                         }
                     }

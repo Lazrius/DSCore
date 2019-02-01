@@ -18,7 +18,7 @@ namespace DSCore.Ini
         public string Nickname { get; set; }
         public uint Name { get; set; }
         public uint Infocard { get; set; }
-        public string Equipment { get; set; }
+        public string Powerplant { get; set; }
         public bool Combinable { get; set; }
         public float Price { get; set; }
         public float BadBuyPrice { get; set; }
