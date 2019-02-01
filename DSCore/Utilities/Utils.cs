@@ -143,20 +143,21 @@ namespace DSCore.Utilities
 
             float totalSize = 30000f * 8f /(float) scale;
             float gridSize = totalSize / 8f;
-            float[] gridX = new [] { -600000f, -gridSize * 4, -gridSize * 3, -gridSize * 2, -gridSize, gridSize, gridSize * 2, gridSize * 3, gridSize * 4, 600000f };
-            float[] gridZ = new[] { -600000f, -gridSize * 4, -gridSize * 3, -gridSize * 2, -gridSize, gridSize, gridSize * 2, gridSize * 3, gridSize * 4, 600000f };
+            float[] grid = new [] { -gridSize * 4, -gridSize * 3, -gridSize * 2, -gridSize, 0, gridSize, gridSize * 2, gridSize * 3, gridSize * 4 };
 
             // The Decimal value for a capital A is 65. So we want to start of with that.
             byte xAxis = 65; // A
-            for (byte index = 0; index < gridX.Length; index++)
+            for (byte index = 0; index < grid.Length; index++)
             {
-                if (index + 1 >= gridX.Length)
+                
+
+                if (index + 1 == grid.Length)
                 {
                     xAxis = 72; // H
                     break;
                 }
-                var x1 = gridX[index];
-                var x2 = gridX[index + 1];
+                var x1 = grid[index];
+                var x2 = grid[index + 1];
 
                 if (position[0] >= x1 && position[0] <= x2)
                 {
@@ -166,22 +167,28 @@ namespace DSCore.Utilities
             }
 
             byte yAxis = 1;
-            for (byte index = 0; index < gridZ.Length; index++) // Loop 10 times. If it's 1 or 10, we set the value to equal 1 and 8 respectivly.
+            for (byte index = 0; index < grid.Length; index++) // Loop 8 times.
             {
-                if (index + 1 >= gridZ.Length) // If we are on the last loop, set the value and return.
+                if (index + 1 == grid.Length) // If we are on the last loop, set the value and return.
                 {
                     yAxis = 8; // Max value
                     break;
                 }
-                var y1 = gridX[index];
-                var y2 = gridX[index + 1]; 
+                var y1 = grid[index];
+                var y2 = grid[index + 1]; 
 
                 if (position[2] >= y1 && position[2] <= y2)
                 {
-                    yAxis = index == 0 ? (byte)1 : index;
+                    yAxis = (byte)(index + yAxis);
                     break;
                 }
             }
+
+            if (grid[0] > position[0])
+                xAxis = 65;
+
+            if (grid[0] > position[2])
+                yAxis = 1;
 
             // Convert the two bytes to a string that is a char, A-H, and a number, 1-8
             string code = ((char)xAxis) + yAxis.ToString();
