@@ -15,8 +15,8 @@ namespace DSCore.Ini
         public float NudgeForce { get; set; }
         public float StrafeForce { get; set; }
         public float Hitpoints { get; set; }
-        public float Price { get; set; }
-        public Powerplant Powerplant { get; set; }
+        public new float Price { get; set; }
+        public new Powerplant Powerplant { get; set; }
         public ShipClass ShipClass { get; set; }
     }
 

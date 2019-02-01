@@ -357,7 +357,7 @@ namespace DSCore.Gen
 
                         case "addon":
                             if (ii.Value.ToLower().Trim().Contains("power"))
-                                power = ii.Value.ToLower().Trim();
+                                power = ii.Value.ToLower().Trim().Split(",").ElementAt(0);
                             break;
 
                         case "combinable":

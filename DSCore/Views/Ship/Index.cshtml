@@ -88,7 +88,10 @@
                     <td>@ship.NudgeForce.ToString("N0")</td>
                     <td>@ship.StrafeForce.ToString("N0")</td>
                     <td data-bots="@ship.ShieldBats.ToString("N0").Replace(",", ""))">@ship.Nanobots / @ship.ShieldBats</td>
-                    <td>@(ship)</td>
+                    @try
+                    {
+                    <td>@(ship.Powerplant.Capacity) / @ship.Powerplant.ChargeRate</td>
+                    } catch { }
                 </tr>
             }
             </tbody>
