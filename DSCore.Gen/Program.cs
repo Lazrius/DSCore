@@ -1527,6 +1527,74 @@ namespace DSCore.Gen
                     processedNumbers.Add(arr[0]); // Make sure we don't repeat for duplicates
                 }
             }
+
+            ini = new IniFile(o);
+            ini.Load(data + @"UNIVERSE\Territory.ini");
+
+            foreach (var section in ini.Sections)
+            {
+                if (section.Name.ToLower() == "houses")
+                {
+                    string temp = section.Keys["format"].Value;
+                    bool isWorld = false;
+                    if (temp == "%s System, %s Space." || temp == "% s System, % s Outer Region.")
+                        isWorld = false;
+                    else if (temp == "% s System, % s Worlds.")
+                        isWorld = true;
+
+                    string house = "None";
+                    foreach (var key in section.Keys)
+                    {
+                        if (key.Name == "house")
+                            house = key.Value;
+
+                        else if (key.Name == "systems")
+                        {
+                            var sys = key.Value.Split(",");
+                            foreach (string nick in sys)
+                            {
+                                var index = systems.FindIndex(x => x.Nickname == nick);
+                                if (index == -1)
+                                    continue;
+                                var syst = systems[index];
+
+                                if (isWorld)
+                                    syst.Region = key.Value + " Worlds";
+
+                                else
+                                    syst.Region = key.Value;
+
+                                systems[index] = syst;
+                            }
+                        }
+                    }
+                }
+
+                else if (section.Name.ToLower() == "systems")
+                {
+                    string region = section.Keys["format"].Value;
+                    if (region.Contains("Atmospheric"))
+                        region = "Atmosphere";
+                    else if (region.Contains("virtual"))
+                        region = "Other";
+                    else if (region.Contains("Cassiopeia"))
+                        region = "Cassiopeia";
+
+                    if (region == section.Keys["format"].Value)
+                        continue;
+
+                    List<string> sys = section.Keys["systems"].Value.Split(",").ToList();
+                    foreach (string nick in sys)
+                    {
+                        var index = systems.FindIndex(x => x.Nickname == nick);
+                        if (index == -1)
+                            continue;
+                        var syst = systems[index];
+                        syst.Region = region;
+                        systems[index] = syst;
+                    }
+                }
+            }
         }
     }
 }
