@@ -1,0 +1,63 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<CountermeasureDropper>
+@{
+    ViewData["Title"] = "Countermeasures";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Countermeasure</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Ammo Count</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Effective Range</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Hitpoints</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CountermeasureDropper dropper in ViewData.Model)
+                {
+                    if (dropper.Ammo == null) { continue; }
+                    string value;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == dropper.Name).Value;
+                        if (value.ToLower().Contains("disruptor")) { continue; }
+                    }
+                    catch { continue; }
+                    <tr>
+                        <td>
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{dropper.Nickname}")"> @value </a>
+                        </td>
+                        <td>@dropper.Ammo.AmmoLimit.ToString("N0")</td>
+                        <td>@dropper.Ammo.EffectiveRange.ToString("N0")</td>
+                        <td>@dropper.Hitpoints.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

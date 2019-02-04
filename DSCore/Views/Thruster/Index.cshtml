@@ -1,0 +1,63 @@
+﻿@using DSCore.Ini
+@using System.Globalization
+@model List<Thruster>
+@{
+    ViewData["Title"] = "Thrusters";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Thruster</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Max Force</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Power Usage</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Hitpoints</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Thruster thruster in ViewData.Model)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                string value;
+                                try
+                                {
+                                    value = Infocards.FirstOrDefault(x => x.Key == thruster.Name).Value;
+                                }
+                                catch { continue; }
+                            }
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{thruster.Nickname}")"> @value </a>
+                        </td>
+                        <td>@thruster.MaxForce.ToString("N0")</td>
+                        <td>@thruster.PowerUsage.ToString("N0")</td>
+                        <td>@thruster.Hitpoints.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

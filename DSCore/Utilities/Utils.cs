@@ -210,17 +210,10 @@ namespace DSCore.Utilities
             return code;
         }
 
-        public static Faction GetFaction(string nickname, List<Faction> factions = null)
+        public static float GetMapSize(decimal scale)
         {
-            if (factions == null)
-            {
-                Errors error = Errors.Null;
-                factions = GetDatabaseCollection<Faction>("Factions", ref error);
-                if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Factions collection.");
-            }
-
-            return factions.Find(x => x.Nickname == nickname);
+            float totalSize = 30000f * 8f / (float)scale;
+            return totalSize;
         }
 
         public enum Endpoints

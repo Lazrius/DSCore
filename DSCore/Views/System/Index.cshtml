@@ -1,0 +1,64 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@model List<System>
+@{
+    ViewData["Title"] = "Factions";
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+}
+
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br />
+        <table>
+            <thead>
+                <tr id="tbl-header">
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Region</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Total Map Size</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Individual Grid Size</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System system in ViewData.Model)
+                {
+                    <tr>
+                        <td>
+                            @{
+                                float totalSize = Utils.GetMapSize(system.NavMapScale == 0 ? 1 : system.NavMapScale);
+                                string value;
+                                try
+                                {
+                                    value = Infocards.FirstOrDefault(x => x.Key == system.Name).Value;
+                                }
+                                catch { continue; }
+                            }
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{system.Nickname}")"> @value </a>
+                        </td>
+                        <td>@system.Region</td>
+                        <td>@((totalSize / 1000f).ToString("N0")) K</td>
+                        <td>@((totalSize / 1000f / 8f).ToString("N0")) K</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

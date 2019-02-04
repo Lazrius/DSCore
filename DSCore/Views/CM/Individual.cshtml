@@ -1,0 +1,97 @@
+﻿@using DSCore.Ini
+@using DSCore.Utilities
+@using System.Globalization
+@model CountermeasureDropper
+@{
+    List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
+    List<Faction> Factions = (List<Faction>)ViewBag.Factions;
+    List<System> Systems = (List<System>)ViewBag.Systems;
+    Dictionary<Base, decimal> Sellpoints = ViewBag.Sellpoints;
+    ViewData["Title"] = Infocards.First(x => x.Key == Model.Name).Value;
+}
+
+
+
+<div class="text-center">
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+
+        @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
+    </div>
+
+    <div class="window window-cell">
+        <h2>@ViewData["Title"]</h2>
+
+        <span>Nickname: </span> @Model.Nickname <br />
+        <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br />
+        <span>Ammo Count: </span> @Model.Ammo.AmmoLimit.ToString("N0")<br />
+        <span>Effective Range: </span>@(Model.Ammo.EffectiveRange.ToString("N0"))<br />
+        <span>Auto-Deployment Range: </span>@(Model.AutoDeploymentRange.ToString("N0"))<br />
+        <span>Hitpoints: </span>@(Model.Hitpoints.ToString("N0"))<br />
+    </div>
+
+    <div class="window">
+        <h1>Sellpoints</h1>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Base Name</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Price</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Location</span></a>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Sellpoints)
+                {
+                    string sellpoint = "";
+                    string value;
+                    try
+                    {
+                        Faction fac = Factions.Find(y => y.Nickname.Trim() == i.Key.OwnerFaction.Trim());
+                        uint num;
+                        if (fac.Nickname.Contains("pf_"))
+                        { num = fac.ShortName; }
+                        else
+                        { num = fac.Name; }
+
+                        string facName = Infocards.First(x => x.Key == num).Value;
+                        value = Infocards.FirstOrDefault(x => x.Key == i.Key.Name).Value;
+                        sellpoint += "<tr>";
+                        sellpoint += $"<td><a href=\"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/base/{i.Key.Nickname}\">{value}</a></td>";
+                        sellpoint += $"<td>{((float)(i.Value == 0 ? 1 : (float)i.Value) * Model.Price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))}</td>";
+                        sellpoint += $"<td>{Infocards.FirstOrDefault(x => x.Key == Systems.First(y => y.Nickname == i.Key.System).Name).Value}</td>";
+                        sellpoint += $"<td>{facName}</td>";
+                        sellpoint += $"<td>{Utils.GetGridCode(Systems.First(x => x.Nickname == i.Key.System), i.Key.Position, true)}</td>";
+                        sellpoint += "</tr>";
+                        @Html.Raw(sellpoint)
+                    }
+                    catch
+                    { continue; }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/grids.js"></script>

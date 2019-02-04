@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using DSCore.Ini;
-using Microsoft.AspNetCore.Mvc;
 using DSCore.Models;
+using Microsoft.AspNetCore.Mvc;
 using DSCore.Utilities;
+using System = DSCore.Ini.System;
 
 namespace DSCore.Controllers
 {
     [Route("[controller]")]
-    public class ShipController : InheritController
+    public class CMController : InheritController
     {
         public IActionResult Index()
         {
             Errors error = Errors.Null;
             try
             {
-                var ships = Utils.GetDatabaseCollection<Ship>("Ships", ref error);
+                var countermeasureDroppers = Utils.GetDatabaseCollection<CountermeasureDropper>("CMs", ref error);
                 if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Ships collection.");
+                    throw new InvalidOperationException("The database was unable to access the CMs collection.");
 
                 var goods = Utils.GetDatabaseCollection<Good>("Goods", ref error);
                 if (error != Errors.Null)
@@ -28,20 +29,20 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Infocards collection.");
 
-                List<Ship> shipsList = new List<Ship>();
-                foreach (var i in ships)
+                List<CountermeasureDropper> droppers = new List<CountermeasureDropper>();
+                foreach (var i in countermeasureDroppers)
                 {
-                    Good good = goods.FirstOrDefault(x => x.Nickname.Replace("_package", "") == i.Nickname);
+                    Good good = goods.FirstOrDefault(x => x.Nickname == i.Nickname);
                     if (good == null)
                         continue;
 
-                    Ship ship = i;
-                    ship.Price = good.Price;
-                    shipsList.Add(ship);
+                    CountermeasureDropper dropper = i;
+                    dropper.Price = good.Price;
+                    droppers.Add(dropper);
                 }
 
                 ViewBag.Infocards = infocards;
-                return View(shipsList);
+                return View(droppers);
             }
             catch (Exception ex)
             {
@@ -55,9 +56,9 @@ namespace DSCore.Controllers
             Errors error = Errors.Null;
             try
             {
-                var ships = Utils.GetDatabaseCollection<Ship>("Ships", ref error);
+                var countermeasureDroppers = Utils.GetDatabaseCollection<CountermeasureDropper>("CMs", ref error);
                 if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Ships collection.");
+                    throw new InvalidOperationException("The database was unable to access the CMs collection.");
 
                 var goods = Utils.GetDatabaseCollection<Good>("Goods", ref error);
                 if (error != Errors.Null)
@@ -67,13 +68,13 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Infocards collection.");
 
-                var marketShips = Utils.GetDatabaseCollection<Market>("MarketsShips", ref error);
-                if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the MarketsShips collection.");
-
                 var bases = Utils.GetDatabaseCollection<Base>("Bases", ref error);
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Bases collection.");
+
+                var marketEquipment = Utils.GetDatabaseCollection<Market>("MarketsEquipment", ref error);
+                if (error != Errors.Null)
+                    throw new InvalidOperationException("The database was unable to access the MarketsEquipment collection.");
 
                 var systems = Utils.GetDatabaseCollection<Ini.System>("Systems", ref error);
                 if (error != Errors.Null)
@@ -83,29 +84,26 @@ namespace DSCore.Controllers
                 if (error != Errors.Null)
                     throw new InvalidOperationException("The database was unable to access the Factions collection.");
 
+                CountermeasureDropper dropper = countermeasureDroppers.Find(x => x.Nickname == nickname);
+                Good good = goods.Find(x => x.Nickname == nickname);
+                dropper.Price = good.Price;
+
                 Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
-                foreach (var i in marketShips)
+                foreach (var i in marketEquipment)
                 {
                     if (i.Good.ContainsKey(nickname))
-                    {
-                        var modifier = i.Good.FirstOrDefault(x => x.Key == nickname).Value;
-                        baseList.Add(i.Base, modifier == 0 ? 1 : modifier);
-                    }
+                        baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == nickname).Value);
                 }
 
                 Dictionary<Base, decimal> sellpoints = new Dictionary<Base, decimal>();
                 foreach (var s in baseList)
                     sellpoints[bases.First(x => x.Nickname == s.Key)] = s.Value;
 
-                Ship ship = ships.Find(x => x.Nickname == nickname);
-                Good good = goods.Find(x => x.Nickname == nickname);
-                ship.Price = good.Price;
-
                 ViewBag.Infocards = infocards;
                 ViewBag.Sellpoints = sellpoints;
-                ViewBag.Systems = systems;
                 ViewBag.Factions = factions;
-                return View(ship);
+                ViewBag.Systems = systems;
+                return View(dropper);
             }
             catch (Exception ex)
             {
