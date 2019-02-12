@@ -64,33 +64,33 @@
             <tbody>
                 @foreach (Weapon weapon in ViewData.Model)
                 {
-                <tr>
-                    <td>@{
-                            string value;
-                            try
-                            { value = Infocards.FirstOrDefault(x => x.Key == weapon.Name).Value; }
-                            catch { continue; }
-                            float explosionShield = 0, explosionHull = 0, explosionRadius = 0;
-                            if (weapon.Munition == null)
-                            { continue; }
-                            if (weapon.Munition.Explosion != null)
-                            {
-                                explosionHull = weapon.Munition.Explosion.HullDamage;
-                                explosionShield = weapon.Munition.Explosion.EnergyDamage;
-                                explosionRadius = weapon.Munition.Explosion.Radius;
-                            }
-                        }
-                        <a href="@($"{ViewContext.HttpContext.Request.Path}/{weapon.Nickname}")"> @value </a>
-                    </td>
-                    <td>@weapon.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
-                    <td>@(value.ToLower().Contains("nomad") ? "Nomad" : weapon.Munition.Explosion == null ? TypeFunctions.EnumToString(weapon.Munition.WeaponType) : "Explosive")</td>
-                    <td>@((weapon.Munition.HullDamage + explosionHull).ToString("N0")) @(explosionRadius == 0 ? null : Html.Raw("(" + explosionRadius + " m radius)"))</td>
-                    <td>@((weapon.Munition.ShieldDamage + weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
-                    <td>@((weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
-                    <td>@weapon.TurnRate</td>
-                    <td>@weapon.PowerUsage</td>
-                    <td>@(weapon.Munition.HasForcedOrientation ? "Yes" : "No")</td>
-                </tr>
+
+                    string value;
+                    try
+                    { value = Infocards.FirstOrDefault(x => x.Key == weapon.Name).Value; }
+                    catch { continue; }
+                    float explosionShield = 0, explosionHull = 0, explosionRadius = 0;
+                    if (weapon.Munition == null)
+                    { continue; }
+                    if (weapon.Munition.Explosion != null)
+                    {
+                        explosionHull = weapon.Munition.Explosion.HullDamage;
+                        explosionShield = weapon.Munition.Explosion.EnergyDamage;
+                        explosionRadius = weapon.Munition.Explosion.Radius;
+                    }
+                    <tr>
+                        <td>
+                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{weapon.Nickname}")"> @value </a>
+                        </td>
+                        <td>@weapon.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                        <td>@(value.ToLower().Contains("nomad") ? "Nomad" : weapon.Munition.Explosion == null ? TypeFunctions.EnumToString(weapon.Munition.WeaponType) : "Explosive")</td>
+                        <td>@((weapon.Munition.HullDamage + explosionHull).ToString("N0")) @(explosionRadius == 0 ? null : Html.Raw("(" + explosionRadius + " m radius)"))</td>
+                        <td>@((weapon.Munition.ShieldDamage + weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
+                        <td>@((weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
+                        <td>@weapon.TurnRate</td>
+                        <td>@weapon.PowerUsage</td>
+                        <td>@(weapon.Munition.HasForcedOrientation ? "Yes" : "No")</td>
+                    </tr>
                 }
             </tbody>
         </table>
