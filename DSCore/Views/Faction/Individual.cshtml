@@ -35,19 +35,19 @@
     <div class="window">
         <h1>Faction Relations</h1>
         <table>
-            <thead>
-            <tr id="tbl-header">
-                <td>
-                    <div class="thead-cell">
-                        <a href="#"><span>Faction</span></a>
-                    </div>
-                </td>
-                <td>
-                    <div class="thead-cell">
-                        <a href="#"><span>@ViewData["Title"]'s Feelings Towards</span></a>
-                    </div>
-                </td>
-            </tr>
+            <thead class="sort-table">
+                <tr>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Faction</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>@ViewData["Title"]'s Feelings Towards</span></a>
+                        </div>
+                    </td>
+                </tr>
             </thead>
             <tbody>
             @foreach (var i in Model.FeelingsTowards)
