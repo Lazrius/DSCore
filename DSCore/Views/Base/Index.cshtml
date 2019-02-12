@@ -60,7 +60,7 @@
                         <td>
                             <a href="@($"{ViewContext.HttpContext.Request.Path}/{b.Nickname}")"> @value </a>
                         </td>
-                        <td><a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/system/{system.Nickname}")">@systemName</a></td>
+                        <td><a href="@($"https://space.discoverygc.com/navmap/#q={systemName}")">@systemName</a></td>
                         <td>@(Utils.GetGridCode(system, b.Position, true))</td>
                         <td><a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/faction/{faction.Nickname}")">@factionName</a></td>
                     </tr>
