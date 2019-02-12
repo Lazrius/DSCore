@@ -31,12 +31,12 @@
                     </td>
                     <td>
                         <div class="thead-cell">
-                            <a href="#"><span>Total Map Size</span></a>
+                            <a href="#"><span>Total Map Size (K)</span></a>
                         </div>
                     </td>
                     <td>
                         <div class="thead-cell">
-                            <a href="#"><span>Individual Grid Size</span></a>
+                            <a href="#"><span>Individual Grid Size (K)</span></a>
                         </div>
                     </td>
                 </tr>
@@ -60,8 +60,8 @@
                         </td>
                         <td>@system.Nickname</td>
                         <td>@system.Region</td>
-                        <td>@((totalSize / 1000f).ToString("N0")) K</td>
-                        <td>@((totalSize / 1000f / 8f).ToString("N0")) K</td>
+                        <td>@((totalSize / 1000f).ToString("N0"))</td>
+                        <td>@((totalSize / 1000f / 8f).ToString("N0"))</td>
                     </tr>
                 }
             </tbody>
