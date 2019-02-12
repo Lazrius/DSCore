@@ -2,7 +2,7 @@
 @using DSCore.Utilities
 @model List<System>
 @{
-    ViewData["Title"] = "Factions";
+    ViewData["Title"] = "Systems";
     List<Infocard> Infocards = (List<Infocard>)ViewBag.Infocards;
 }
 
@@ -17,6 +17,11 @@
                     <td>
                         <div class="thead-cell">
                             <a href="#"><span>System</span></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="thead-cell">
+                            <a href="#"><span>Nickname</span></a>
                         </div>
                     </td>
                     <td>
@@ -39,19 +44,21 @@
             <tbody>
                 @foreach (System system in ViewData.Model)
                 {
+                    float totalSize = Utils.GetMapSize(system.NavMapScale == 0 ? 1 : system.NavMapScale);
+                    string value;
+                    try
+                    {
+                        value = Infocards.FirstOrDefault(x => x.Key == system.Name).Value;
+                        if (value == "???" || value.ToLower().Contains("help") || value.ToLower().Contains("uncharted")
+                            || value.ToLower().Contains("atmosphere")) { continue; }
+                    }
+                    catch { continue; }
+                    
                     <tr>
                         <td>
-                            @{
-                                float totalSize = Utils.GetMapSize(system.NavMapScale == 0 ? 1 : system.NavMapScale);
-                                string value;
-                                try
-                                {
-                                    value = Infocards.FirstOrDefault(x => x.Key == system.Name).Value;
-                                }
-                                catch { continue; }
-                            }
-                            <a href="@($"{ViewContext.HttpContext.Request.Path}/{system.Nickname}")"> @value </a>
+                            <a href="@($"https://space.discoverygc.com/navmap/#q={value}")" target="_blank"> @value </a>
                         </td>
+                        <td>@system.Nickname</td>
                         <td>@system.Region</td>
                         <td>@((totalSize / 1000f).ToString("N0")) K</td>
                         <td>@((totalSize / 1000f / 8f).ToString("N0")) K</td>
