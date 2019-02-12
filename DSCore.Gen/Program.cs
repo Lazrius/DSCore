@@ -1529,7 +1529,7 @@ namespace DSCore.Gen
             }
 
             ini = new IniFile(o);
-            ini.Load(data + @"UNIVERSE\Territory.ini");
+            ini.Load(data + @"\UNIVERSE\Territory.ini");
 
             foreach (var section in ini.Sections)
             {
