@@ -1,4 +1,13 @@
-﻿@{
+﻿@model List<object>
+@using DSCore.Ini
+@{
     ViewData["Title"] = "Search";
 }
 <h2>@ViewData["Title"]</h2>
+@foreach (object obj in Model)
+{
+    if (obj.GetType() == typeof(Base))
+    {
+        <p>it's a base</p>
+    }
+}

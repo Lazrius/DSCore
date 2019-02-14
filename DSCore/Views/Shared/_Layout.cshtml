@@ -13,10 +13,10 @@
               crossorigin="anonymous"
               integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
     </environment>
-    <environment include="Development">
+    <!--<environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    </environment>
+    </environment>-->
     <environment exclude="Development">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
@@ -32,6 +32,7 @@
         </script>
     </environment>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <title>@ViewData["Title"] - DSCore</title>
 </head>
 <body>
@@ -45,9 +46,6 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" href="@(Url.Action("Api", "Home"))">Api</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" href="@(Url.Action("Index", "Base"))">Bases</a>
                         </li>
@@ -78,6 +76,14 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" href="@(Url.Action("Index", "Weapon"))">Weapons</a>
                         </li>
+                        <li class="nav-item">
+                            <div class="search-box">
+                                <input type="text" placeholder="Type to search" class="search-txt" id="search-box">
+                                <a href="#" class="search-btn" id="search-click">
+                                    <i class="fas fa-search"></i>
+                                </a>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -99,6 +105,7 @@
         </footer>
     </div>
     <script src="~/js/navbar.js" asp-append-version="true"></script>
+    <script src="~/js/search.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -58,15 +58,7 @@ namespace DSCore
             });
             app.UseCookiePolicy();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
-                routes.MapRoute(
-                    name: "commodity",
-                    template: "{controller=Commodity}/{action=Index}");
-            });
+            app.UseMvcWithDefaultRoute();
         }
     }
 }

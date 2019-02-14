@@ -18,7 +18,7 @@ namespace DSCore.Controllers
             {
                 var weapons = Utils.GetDatabaseCollection<Weapon>("Weapons", ref error);
                 if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Commodities collection.");
+                    throw new InvalidOperationException("The database was unable to access the Weapons collection.");
 
                 var goods = Utils.GetDatabaseCollection<Good>("Goods", ref error);
                 if (error != Errors.Null)
