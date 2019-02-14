@@ -3,9 +3,12 @@
     let value = tr.children[idx].innerText || tr.children[idx].textContent; // Get the cell value
     if (value.match(/\d/g) && value.match(/\D/g)) // If the value contains a number and a letter
     {
-        let numbers = value.match(/\d+/g).toString(); // Get a string o
-        let text = value.match(/\D+/g).toString();
-        if (text.length < numbers.length)
+        if (value.match(/\(([^\)]+)\)/g)) // Does it contain brackets
+            value = value.replace(/\(([^\)]+)\)/g, "") // Remove everything inside the brackets if it does
+
+        let numbers = value.match(/\d+/g).toString(); // Get a string of numbers
+        let text = value.match(/\D+/g).toString(); // Get a string of all characters
+        if (text.length < numbers.length) // Are there more numbers then there are characters?
             value = value.replace(/\D/g, ''); // Remove all none numbers
     }
     return value; // Return the string that can now be sorted without issue
