@@ -6,8 +6,8 @@
         if (value.match(/\(([^\)]+)\)/g)) // Does it contain brackets
             value = value.replace(/\(([^\)]+)\)/g, "") // Remove everything inside the brackets if it does
 
-        let numbers = value.match(/\d+/g).toString(); // Get a string of numbers
-        let text = value.match(/\D+/g).toString(); // Get a string of all characters
+        let numbers = (value.match(/\d+/g) || "").toString(); // Get a string of numbers
+        let text = (value.match(/\D+/g) || "").toString(); // Get a string of all characters
         if (text.length < numbers.length) // Are there more numbers then there are characters?
             value = value.replace(/\D/g, ''); // Remove all none numbers
     }
