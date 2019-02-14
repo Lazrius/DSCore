@@ -17,7 +17,7 @@ namespace DSCore.Gen
         {
             string root = Directory.GetCurrentDirectory();
             string output = root + @"\Output";
-            
+
             if (!File.Exists(root + @"\EXE\Freelancer.exe"))
             {
                 Console.WriteLine("Freelancer.exe not found. Assuming not in the correct directory. Please relocate to the root of your Freelancer install.");
@@ -26,7 +26,7 @@ namespace DSCore.Gen
             }
 
             List<Armour> armours = new List<Armour>();
-            List<CloakingDevice> cloaks = new List<CloakingDevice>(); 
+            List<CloakingDevice> cloaks = new List<CloakingDevice>();
             List<CloakDisrupter> disrupters = new List<CloakDisrupter>();
             List<Commodity> commodities = new List<Commodity>();
             List<CountermeasureDropper> droppers = new List<CountermeasureDropper>();
@@ -482,7 +482,7 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    
+
                 }
                 goods.Add(good);
             }
@@ -528,7 +528,7 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    
+
                 }
                 goods.Add(good);
             }
@@ -574,7 +574,7 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    
+
                 }
                 goods.Add(good);
             }
@@ -620,7 +620,7 @@ namespace DSCore.Gen
                             break;
                     }
 
-                    
+
                 }
                 goods.Add(good);
             }
@@ -1030,7 +1030,7 @@ namespace DSCore.Gen
                     Console.WriteLine("Error trying to load explosions. Message: " + ex.Message);
                 }
             }
-                
+
             foreach (Munition i in tempMunitions)
             {
                 try
@@ -1195,7 +1195,7 @@ namespace DSCore.Gen
         }
 
         // This stuff is so big, I'm moving it to it's own function for better readability.
-        static void SetupBasesAndSystems(IniOptions o, string data, 
+        static void SetupBasesAndSystems(IniOptions o, string data,
             out List<Market> marketCommodities, out List<Market> marketEquipment, out List<Market> marketShips,
             out List<Base> bases, out List<Ini.System> systems)
         {
@@ -1350,7 +1350,7 @@ namespace DSCore.Gen
                                 case "system":
                                     systemStr = ii.Value.ToLower();
                                     iBase.System = systemStr;
-                                    
+
                                     if (!baseSystems.ContainsKey(systemStr))
                                         baseSystems[systemStr] = new List<Base>();
                                     break;
@@ -1364,7 +1364,7 @@ namespace DSCore.Gen
                         bases.Add(iBase);
                         break;
                     case "system":
-                        Ini.System system = new Ini.System { Region = "None", Bases = new List<Base>()};
+                        Ini.System system = new Ini.System { Region = "None", Bases = new List<Base>() };
                         string temp3 = null, temp4 = null;
                         foreach (IniKey ii in i.Keys)
                         {
@@ -1537,9 +1537,7 @@ namespace DSCore.Gen
                 {
                     string temp = section.Keys["format"].Value;
                     bool isWorld = false;
-                    if (temp == "%s System, %s Space." || temp == "% s System, % s Outer Region.")
-                        isWorld = false;
-                    else if (temp == "% s System, % s Worlds.")
+                    if (temp == "%s System, %s Worlds.")
                         isWorld = true;
 
                     string house = "None";
@@ -1550,21 +1548,31 @@ namespace DSCore.Gen
 
                         else if (key.Name == "systems")
                         {
-                            var sys = key.Value.Split(",");
+                            var sys = Regex.Replace(key.Value, @"\s+", "").Split(",");
                             foreach (string nick in sys)
                             {
-                                var index = systems.FindIndex(x => x.Nickname == nick);
-                                if (index == -1)
-                                    continue;
-                                var syst = systems[index];
-
-                                if (isWorld)
-                                    syst.Region = key.Value + " Worlds";
+                                Regex regex = new Regex(@"^([aA-zZ]+)([0-9]{2})-([0-9]+)$");
+                                Match match = regex.Match(nick);
+                                if (match.Success)
+                                {
+                                    int[] sysNicks = Enumerable.Range(Convert.ToInt32(match.Groups[2].Value), Convert.ToInt32(match.Groups[3].Value)).ToArray();
+                                    foreach (int i in sysNicks)
+                                    {
+                                        if (isWorld)
+                                            UpdateSystemRegion(ref systems, house + " Worlds", match.Groups[1].Value + i.ToString("D2"));
+                                        else
+                                            UpdateSystemRegion(ref systems, house, match.Groups[1].Value + i.ToString("D2"));
+                                    }
+                                }
 
                                 else
-                                    syst.Region = key.Value;
+                                {
+                                    if (isWorld)
+                                        UpdateSystemRegion(ref systems, house + " Worlds", nick);
 
-                                systems[index] = syst;
+                                    else
+                                        UpdateSystemRegion(ref systems, house, nick);
+                                }
                             }
                         }
                     }
@@ -1575,7 +1583,7 @@ namespace DSCore.Gen
                     string region = section.Keys["format"].Value;
                     if (region.Contains("Atmospheric"))
                         region = "Atmosphere";
-                    else if (region.Contains("virtual"))
+                    else if (region.Contains("Virtual"))
                         region = "Other";
                     else if (region.Contains("Cassiopeia"))
                         region = "Cassiopeia";
@@ -1583,18 +1591,37 @@ namespace DSCore.Gen
                     if (region == section.Keys["format"].Value)
                         continue;
 
-                    List<string> sys = section.Keys["systems"].Value.Split(",").ToList();
+                    List<string> sys = Regex.Replace(section.Keys["systems"].Value, @"\s+", "").Split(",").ToList();
                     foreach (string nick in sys)
                     {
-                        var index = systems.FindIndex(x => x.Nickname == nick);
-                        if (index == -1)
-                            continue;
-                        var syst = systems[index];
-                        syst.Region = region;
-                        systems[index] = syst;
+                        Regex regex = new Regex(@"^([aA-zZ]+)([0-9]{2})-([0-9]+)$");
+                        Match match = regex.Match(nick);
+                        if (match.Success)
+                        {
+                            int[] sysNicks = Enumerable.Range(Convert.ToInt32(match.Groups[2].Value), Convert.ToInt32(match.Groups[3].Value)).ToArray();
+                            foreach (int i in sysNicks)
+                            {
+                                UpdateSystemRegion(ref systems, region, match.Groups[1].Value + i.ToString("D2"));
+                            }
+                        }
+
+                        else
+                        {
+                            UpdateSystemRegion(ref systems, region, nick);
+                        }
                     }
                 }
             }
+        }
+
+        private static void UpdateSystemRegion(ref List<Ini.System> systems, string region, string nick)
+        {
+            var index = systems.FindIndex(x => x.Nickname == nick.ToLower());
+            if (index == -1)
+                return;
+            var syst = systems[index];
+            syst.Region = region;
+            systems[index] = syst;
         }
     }
 }
