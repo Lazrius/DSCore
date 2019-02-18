@@ -1,13 +1,35 @@
-﻿@model List<object>
-@using DSCore.Ini
-@{
+﻿@{
     ViewData["Title"] = "Search";
 }
-<h2>@ViewData["Title"]</h2>
-@foreach (object obj in Model)
-{
-    if (obj.GetType() == typeof(Base))
-    {
-        <p>it's a base</p>
-    }
-}
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br /><br />
+        <p>
+            Below you can filter out your search with various settings. By selecting the different options, it will alter what your search will look for.
+            You can specify a serach term at the bottom of the page, next to where you submit it.
+        </p><br />
+
+        <section class="search" id="categories">
+            <h5>Search Categories</h5>
+            <input class="search" id="base" type="checkbox"><label class="search" for="base">Bases</label>
+            <input class="search" id="com" type="checkbox"><label class="search" for="com">Commodities</label>
+            <input class="search" id="cms" type="checkbox"><label class="search" for="cms">Countermeasures</label>
+            <input class="search" id="fac" type="checkbox"><label class="search" for="fac">Factions</label>
+            <input class="search" id="shld" type="checkbox"><label class="search" for="shld">Shields</label>
+            <input class="search" id="ship" type="checkbox"><label class="search" for="ship">Ships</label>
+            <input class="search" id="sequip" type="checkbox"><label class="search" for="sequip">Special Equipment</label>
+            <input class="search" id="sys" type="checkbox"><label class="search" for="sys">Systems</label>
+            <input class="search" id="thru" type="checkbox"><label class="search" for="thru">Thrusters</label>
+            <input class="search" id="weap" type="checkbox"><label class="search" for="weap">Weapons</label>
+        </section><br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+        <h4>Enter Search Term</h4><br />
+        <div class="search-box" style="width: 40%; display: inline-table">
+
+        </div><br />
+        <input class="search" id="start-search" type="checkbox"><label class="search" for="start-search">Search!</label>
+        <br />
+    </div>
+</div>

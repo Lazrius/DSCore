@@ -77,12 +77,9 @@
                             <a class="nav-link text-light" href="@(Url.Action("Index", "Weapon"))">Weapons</a>
                         </li>
                         <li class="nav-item">
-                            <div class="search-box">
-                                <input type="text" placeholder="Type to search" class="search-txt" id="search-box">
-                                <a href="#" class="search-btn" id="search-click">
-                                    <i class="fas fa-search"></i>
-                                </a>
-                            </div>
+                            <a class="nav-link text-light search-box" href="@(Url.Action("Search", "Home"))">
+                                <i class="fas fa-search" style="padding-left: 5px;"></i> <span style="padding-left: 10px;">Search</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -105,7 +102,6 @@
         </footer>
     </div>
     <script src="~/js/navbar.js" asp-append-version="true"></script>
-    <script src="~/js/search.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

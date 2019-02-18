@@ -34,6 +34,7 @@ namespace DSCore
 
             services.AddDirectoryBrowser();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,8 +57,8 @@ namespace DSCore
                 ServeUnknownFileTypes = true,
                 DefaultContentType = "application/octet-stream"
             });
-            app.UseCookiePolicy();
 
+            app.UseCookiePolicy();
             app.UseMvcWithDefaultRoute();
         }
     }

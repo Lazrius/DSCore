@@ -189,45 +189,41 @@ table .thead-cell {
     align-items: center;
 }
 
-/* Search bar stuff from: https://codepen.io/AhmedMaroOf/pen/BvrMMZ */
-
 .search-box {
     position: absolute;
     background-color: #2f3640;
     height: 40px;
     border-radius: 40px;
+    width: 100px
 }
 
-.search-box:hover > .search-txt {
-    width: 160px;
-    padding: 0 6px;
+section.search {
+    padding: 16px;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.search-box:hover > .search-btn {
-    background: white;
+input.search {
+    position: absolute;
+    left: -9999px;
 }
 
-.search-btn {
-    color: #0094ff;
-    float: right;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #2f3640;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+label.search {
+    margin: 8px;
+    padding: 16px;
+    border-radius: 4px;
+    border: solid 2px rgba(255, 255, 255, .4);
+    background-color: rgba(255, 255, 255, .2);
+    cursor: pointer;
+    transition: all .1s;
 }
 
-.search-txt {
-    border: none;
-    background: none;
-    outline: none;
-    float: left;
-    padding: 0;
-    color: white;
-    font-size: 16px;
-    transition: 0.4s;
-    line-height: 40px;
-    width: 0px;
+label.search::before {
+    display: inline;
+}
+
+input.search:checked + label {
+    border: solid 2px #fff;
+    background-color: rgba(255, 255, 255, .4);
+    box-shadow: 0 0 10px #fff;
 }
