@@ -8,7 +8,8 @@
         <br /><br />
         <p>
             Below you can filter out your search with various settings. By selecting the different options, it will alter what your search will look for.
-            You can specify a serach term at the bottom of the page, next to where you submit it.
+            You can specify a serach term at the bottom of the page, next to where you submit it. The search results automatically cap at 100, so it's not 
+            suggested to include all categories, as this will simply increase the load time without an affect on the actual result.
         </p><br />
 
         <section class="search" id="categories">
@@ -23,13 +24,15 @@
             <input class="search" id="sys" type="checkbox"><label class="search" for="sys">Systems</label>
             <input class="search" id="thru" type="checkbox"><label class="search" for="thru">Thrusters</label>
             <input class="search" id="weap" type="checkbox"><label class="search" for="weap">Weapons</label>
-        </section><br /><br /><br /><br /><br /><br /><br /><br /><br />
+        </section><br /><br />
 
         <h4>Enter Search Term</h4><br />
-        <div class="search-box" style="width: 40%; display: inline-table">
-
+        <div class="search-bar" style="position: static; display: inline-table;">
+            <input id="search-term" type="text" placeholder="Search Term..."/>
         </div><br />
-        <input class="search" id="start-search" type="checkbox"><label class="search" for="start-search">Search!</label>
+        <a href=""><input class="search" id="start-search"><label class="search" for="start-search">Search!</label></a>
         <br />
     </div>
 </div>
+
+<script src="~/js/search.js"></script>

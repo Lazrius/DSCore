@@ -1,0 +1,58 @@
+﻿@model List<Search>
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<div class="text-center">
+    <div class="window">
+        <h2>@ViewData["Title"]</h2>
+        <br /><br />
+        
+        @if (Model.Count == 0)
+        {
+            <p>
+                Sorry, nothing matched the serch term you provided
+            </p>
+        }
+
+        else
+        {
+            <div class="search-results">
+                <ul class="list" id="list">
+                    @foreach (var i in Model)
+                    {
+                        string targetController = i.Type.ToString();
+                        switch (targetController)
+                        {
+                            case "CloakingDevice":
+                                targetController = "SpecialEquipment/Cloak";
+                                break;
+
+                            case "CloakDisrupter":
+                                targetController = "SpecialEquipment/Disrupter";
+                                break;
+
+                            case "CountermeasureDropper":
+                                targetController = "CM";
+                                break;
+                        }
+                        <li class="list-item">
+                            <a
+                                href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
+                                        $"{targetController}/{i.Nickname}")"><span>@i.Name</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    var ul = document.getElementById("list");
+
+    Array.from(ul.getElementsByTagName("li"))
+        .sort((a, b) => a.textContent.localeCompare(b.textContent))
+        .forEach(li => ul.appendChild(li));
+</script>

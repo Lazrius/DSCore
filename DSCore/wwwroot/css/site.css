@@ -197,6 +197,29 @@ table .thead-cell {
     width: 100px
 }
 
+.search-bar {
+    background: #343a40;
+    border-radius: 20px;
+    -webkit-transform-origin: 100% 50%;
+    transform-origin: 100% 50%;
+    width: 45%;
+    height: 40px;
+    cursor: pointer;
+    transition: 250ms ease;
+}
+
+.search-bar input {
+    background: transparent;
+    margin: 0 auto;
+    border: 0;
+    outline: none;
+    height: 40px;
+    width: 90%;
+    text-align: center;
+    overflow: hidden;
+    color: #CCC;
+}
+
 section.search {
     padding: 16px;
     border-radius: 4px;
@@ -227,3 +250,40 @@ input.search:checked + label {
     background-color: rgba(255, 255, 255, .4);
     box-shadow: 0 0 10px #fff;
 }
+
+.search-results {
+    margin: auto;
+    width: 600px;
+    height: 530px;
+    padding: 1em;
+    overflow: hidden;
+    margin-top: 0.4em;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+    .search-results .list {
+        max-height: 220px;
+    }
+
+    .search-results .list-item {
+        font-size: 0.9em;
+        padding: 0.5em 0.8em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        word-wrap: normal;
+        max-width: 100%;
+    }
+
+    .search-results .list-item a::after {
+        content: none;
+    }
+
+    .search-results .list-item:first-child {
+        border-top: none;
+    }
+
+    .search-results .list-item:last-child {
+        border-bottom: none;
+    }

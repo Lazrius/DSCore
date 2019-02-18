@@ -1,68 +1,27 @@
-﻿/*document.getElementsByClassName("dropdown dd ul li a").forEach((item) => {
-    item.addEventListener("click", (e) => {
-        e.target.hide();
-    })
-});
-
-document.addEventListener("click", ((item) => {
-    const target = item.target;
-    if (!target.parents().hasClass("dropdown")) {
-        document.getElementsByClassName("dropdown dd ul").forEach(tag => {
-            tag.hide();
-        });
+﻿document.getElementById("start-search").addEventListener("click", (e) => {
+    e.preventDefault();
+    const query = document.getElementById("search-term").value;
+    if (query.empty || query.length < 4) {
+        alert("You must supply a search term of at least 4 characters.");
+        return;
     }
-}));
 
-document.getElementsByClassName('mutliSelect input[type="checkbox"]').forEach((item) => {
-    item.addEventListener((e) => {
-        e.preventDefault();
-        e.target.closest('multiSelect').querySelectorAll('input[type="checkbox"]').value;
-        document.getElementById("search").textContent = document.getElementsByClassName("multiSelect").forEach((a => {
-            a.querySelectorAll('input[type="checkbox"]').value
-        }))
-    })
-});
-*/
+    const categories = document.querySelectorAll("input[type='checkbox']");
+    let queryString = "";
+    queryString += "query=" + query;
+    let categoryFound = false;
 
-/*
-	Dropdown with Multiple checkbox select with jQuery - May 27, 2013
-	(c) 2013 @ElmahdiMahmoud
-	license: https://www.opensource.org/licenses/mit-license.php
-*/
+    categories.forEach((item) => {
+        if (item.checked) {
+            categoryFound = true;
+            queryString += "&type=" + item.id;
+        }
+    });
 
-$(".dropdown dt a").on("click", function () {
-    $(".dropdown dd ul").slideToggle("fast");
-});
-
-$(".dropdown dd ul li a").on("click", function () {
-    $(".dropdown dd ul").hide();
-});
-
-function getSelectedValue(id) {
-    return $("#" + id)
-        .find("dt a span.value")
-        .html();
-}
-
-$(document).bind("click", function (e) {
-    var $clicked = $(e.target);
-    if (!$clicked.parents().hasClass("dropdown")) $(".dropdown dd ul").hide();
-});
-
-$('.mutliSelect input[type="checkbox"]').on("click", function () {
-    var title = $(this)
-        .closest(".mutliSelect")
-        .find('input[type="checkbox"]')
-        .val(),
-        title = $(this).val() + ",";
-
-    if ($(this).is(":checked")) {
-        var html = '<span title="' + title + '">' + title + "</span>";
-        $(".multiSel").append(html);
-        $(".hida").hide();
-    } else {
-        $('span[title="' + title + '"]').remove();
-        var ret = $(".hida");
-        $(".dropdown dt a").append(ret);
+    if (!categoryFound) {
+        alert("You must select at least one category.");
+        return;
     }
+
+    window.location.href = "https://" + window.location.host + "/Home/Search/" + queryString;
 });
