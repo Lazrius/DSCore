@@ -13,36 +13,13 @@
 
 
 <div class="text-center">
-    <div class="window window-cell">
+    <div class="window">
         <h2>@ViewData["Title"]</h2>
         <br />
         <br />
         <h1>TODO: Add icon</h1>
 
         @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
-    </div>
-
-    <div class="window window-cell">
-        <table>
-            <tbody>
-                <tr>
-                    <td>@Infocards.First(x => x.Key == Model.Name).Value</td>
-                    <td>@Model.Nickname</td>
-                    <td>@Model.Price</td>
-                    <td>@Model.GoodBuyPrice / @Model.BadBuyPrice</td>
-                    <td>@Model.GoodSellPrice / @Model.BadSellPrice</td>
-                    <td>@(Model.DecayRate != 0 ? ((Int32)Model.Hitpoints % Model.DecayRate).ToString() : "Not Perishable")</td>
-                </tr>
-            </tbody>
-        </table>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <h1>i can't remember why this box exists</h1>
     </div>
 
     <div class="window">
