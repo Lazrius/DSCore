@@ -86,9 +86,9 @@ namespace DSCore.Controllers
                 Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
                 foreach (var i in marketShips)
                 {
-                    if (i.Goods.FirstOrDefault(x => x.Nickname == nickname) != null)
+                    if (i.Goods.FirstOrDefault(x => x.Nickname.Replace("_package", "") == nickname) != null)
                     {
-                        var modifier = i.Goods.FirstOrDefault(x => x.Nickname == nickname).PriceModifier;
+                        var modifier = i.Goods.FirstOrDefault(x => x.Nickname.Replace("_package", "") == nickname).PriceModifier;
                         baseList.Add(i.Base, modifier == 0 ? 1 : modifier);
                     }
                 }
