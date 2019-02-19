@@ -3,8 +3,8 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:_maxSearchResults81",
-      "sslPort": 44_maxSearchResults4
+      "applicationUrl": "http://localhost:3081",
+      "sslPort": 44304
     }
   },
   "profiles": {
@@ -18,7 +18,7 @@
     "DSCore": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:_maxSearchResults81",
+      "applicationUrl": "https://localhost:3081",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
