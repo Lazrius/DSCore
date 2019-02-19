@@ -42,7 +42,7 @@ namespace DSCore.Controllers
                     return View("SearchResults", new List<Search>());
                 }
 
-                string search = match.Groups[1].Value;
+                string search = match.Groups[1].Value.ToLower();
                 string[] categories = match.Groups[2].Value.Split("&");
                 bool[] includeArray = new bool[10];
                 foreach (string str in categories)
@@ -250,7 +250,7 @@ namespace DSCore.Controllers
             {
                 Search search = Models.Search.CreateInstance(t, infocards);
                 if (search == null) continue;
-                if (search.Name.Contains(searchTerm) || search.Infocard.Contains(searchTerm) && searchResults.Count < _maxSearchResults)
+                if (search.Name.ToLower().Contains(searchTerm) || search.Infocard.ToLower().Contains(searchTerm) && searchResults.Count < _maxSearchResults)
                     searchResults.Add(search);
             }
         }

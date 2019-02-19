@@ -41,6 +41,8 @@ namespace DSCore.Models
             else
                 return null;
 
+            if (nickname is null || name is null || infocard is null)
+                return null;
             Search search = new Search(nickname, name, infocard, instance.GetType().Name);
             return search;
         }

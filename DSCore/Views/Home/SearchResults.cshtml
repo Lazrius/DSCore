@@ -36,12 +36,19 @@
                                 targetController = "CM";
                                 break;
                         }
-                        <li class="list-item">
-                            <a
-                                href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
-                                        $"{targetController}/{i.Nickname}")"><span>@i.Name</span>
+                    <li class="list-item">
+                        @if (i.Type.ToString() == "System")
+                        {
+                            <a href="https://space.discoverygc.com/navmap/#q=@(i.Name)"><span>@i.Name</span></a>
+                        }
+                        else
+                        {
+                            <a href="@($"{ViewContext.HttpContext.Request.Scheme}://{ViewContext.HttpContext.Request.Host}/" +
+                                          $"{targetController}/{i.Nickname}")">
+                                <span>@i.Name</span>
                             </a>
-                        </li>
+                        }
+                    </li>
                     }
                 </ul>
             </div>
