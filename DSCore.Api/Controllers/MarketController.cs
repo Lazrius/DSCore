@@ -56,7 +56,7 @@ namespace DSCore.Api.Controllers
                 if (collection.Count() == 0)
                     return Utils.ReturnJson(null, Errors.InvalidDatabaseStructure);
 
-                var find = collection.Find(x => x.Good.ContainsKey(nickname));
+                var find = collection.Find(x => x.Goods.Any(y => y.Nickname == nickname));
                 if (find == null)
                     return Utils.ReturnJson(null, Errors.ValueNotFound);
                 else
@@ -99,7 +99,7 @@ namespace DSCore.Api.Controllers
                 if (collection.Count() == 0)
                     return Utils.ReturnJson(null, Errors.InvalidDatabaseStructure);
 
-                var find = collection.Find(x => x.Good.ContainsKey(nickname));
+                var find = collection.Find(x => x.Goods.Any(y => y.Nickname == nickname));
                 if (find == null)
                     return Utils.ReturnJson(null, Errors.ValueNotFound);
                 else

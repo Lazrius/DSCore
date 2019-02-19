@@ -9,8 +9,14 @@ namespace DSCore.Ini
     {
         [BsonId]
         public string Base { get; set; }
+        public List<MarketGood> Goods { get; set; }
+    }
 
-        // Commodity Nick Name, Price multiplier
-        public Dictionary<string, decimal> Good { get; set; }
+    public sealed class MarketGood
+    {
+        public string Nickname { get; set; }
+        public int StockA { get; set; }
+        public int StockB { get; set; }
+        public decimal PriceModifier { get; set; }
     }
 }

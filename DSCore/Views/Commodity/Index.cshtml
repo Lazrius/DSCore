@@ -31,7 +31,7 @@
                     </td>
                     <td>
                         <div class="thead-cell">
-                            <a href="#"><span>Good/Bad Buy Price</span></a>
+                            <a href="#"><span>Good Buy Price</span></a>
                         </div>
                     </td>
                     <td>
@@ -56,13 +56,15 @@
                                 try
                                 { value = Infocards.FirstOrDefault(x => x.Key == commodity.Name).Value; }
                                 catch { continue; }
+                                int price = Convert.ToInt32(commodity.Price);
                             }
                             <a href="@($"{ViewContext.HttpContext.Request.Path}/{commodity.Nickname}")"> @value </a>
                         </td>
-                        <td>@commodity.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                        <td>@price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
                         <td>@commodity.CargoSpaceRequired</td>
-                        <td>@commodity.GoodBuyPrice / @commodity.BadBuyPrice</td>
-                        <td>@commodity.GoodSellPrice / @commodity.BadSellPrice</td>
+                        <td>@((commodity.GoodBuyPrice * price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</td>
+                        <td>@((commodity.GoodSellPrice * price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))) / 
+                        @((commodity.BadSellPrice * price).ToString("C0", CultureInfo.CreateSpecificCulture("en-US")))</td>
                         <td>@(commodity.Combinable ? "Yes" : "No")</td>
                     </tr>
                 }

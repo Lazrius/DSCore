@@ -1,14 +1,8 @@
-﻿using DSCore.Api;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using DSCore.Ini;
 using LiteDB;
 
 namespace DSCore.Utilities
@@ -34,7 +28,8 @@ namespace DSCore.Utilities
             return File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"FLData.db"));
         }
 
-        public static T GetAPIResponse<T>(string targetEndpoint)
+        // Api stuff commeneted out as it's not needed currently
+        /*public static T GetAPIResponse<T>(string targetEndpoint)
         {
             try
             {
@@ -52,6 +47,26 @@ namespace DSCore.Utilities
                 return default(T);
             }
         }
+        
+        public static Dictionary<Base, decimal> GetSellPoint(string endpoint, string item)
+        {
+            List<Market> markets = GetAPIResponse<List<Market>>(endpoint);
+            Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
+            foreach (var i in markets)
+            {
+                if (i.Good.ContainsKey(item))
+                    baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == item).Value);
+            }
+
+            Dictionary<Base, decimal> bases = new Dictionary<Base, decimal>();
+            foreach (var s in baseList)
+            {
+                Base b = GetAPIResponse<Base>("base/" + s.Key);
+                bases[b] = s.Value;
+            }
+
+            return bases;
+        }*/
 
         public static List<T> GetDatabaseCollection<T>(string collectionName, ref Errors error)
         {
@@ -77,26 +92,6 @@ namespace DSCore.Utilities
                 error = Errors.Null;
                 return list;
             }
-        }
-
-        public static Dictionary<Base, decimal> GetSellPoint(string endpoint, string item)
-        {
-            List<Market> markets = GetAPIResponse<List<Market>>(endpoint);
-            Dictionary<string, decimal> baseList = new Dictionary<string, decimal>();
-            foreach (var i in markets)
-            {
-                if (i.Good.ContainsKey(item))
-                    baseList.Add(i.Base, i.Good.FirstOrDefault(x => x.Key == item).Value);
-            }
-
-            Dictionary<Base, decimal> bases = new Dictionary<Base, decimal>();
-            foreach (var s in baseList)
-            {
-                Base b = GetAPIResponse<Base>("base/" + s.Key);
-                bases[b] = s.Value;
-            }
-
-            return bases;
         }
 
         public static string XmlToHtml(string xml)

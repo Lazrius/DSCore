@@ -119,7 +119,7 @@
                         </td>
                         <td>@commodity.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
                         <td>@commodity.CargoSpaceRequired</td>
-                        <td>TODO: Base sells y/n</td>
+                        <td>@(commodity.BaseSells ? "Yes" : "No")</td>
                     </tr>
                 }
             </tbody>

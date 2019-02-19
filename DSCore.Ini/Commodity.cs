@@ -25,5 +25,6 @@ namespace DSCore.Ini
         public float GoodBuyPrice { get; set; }
         public float BadSellPrice { get; set; }
         public float GoodSellPrice { get; set; }
+        public bool BaseSells { get; set; }
     }
 }

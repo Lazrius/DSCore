@@ -429,7 +429,7 @@ namespace DSCore.Gen
                 try
                 {
                     Ship ship = ships.ElementAt(index);
-                    if (marketShips.FindIndex(x => x.Good.Any(y => y.Key == ship.Nickname)) == -1)
+                    if (marketShips.FindIndex(x => x.Goods.Any(y => y.Nickname == ship.Nickname)) == -1)
                         continue;
                     ship.Powerplant = powerplants.Find(x => x.Nickname == goods.Find(y => y.Nickname == ship.Nickname).Powerplant);
                     ships[index] = ship;
@@ -1226,17 +1226,28 @@ namespace DSCore.Gen
                                 market.Base = ii.Value.ToLower();
                                 break;
                             case "marketgood":
-                                if (market.Good == null)
-                                    market.Good = new Dictionary<string, decimal>();
+                                if (market.Goods == null)
+                                    market.Goods = new List<MarketGood>();
 
                                 string[] arr = ii.Value.Split(",");
-                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                if (market.Goods.Any(x => x.Nickname == arr[0])) // Mimic how FL reads ini files
                                 {
-                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    int index = market.Goods.FindIndex(x => x.Nickname == arr[0]);
+                                    MarketGood good = market.Goods[index];
+                                    good.Nickname = arr[0].ToLower();
+                                    good.StockA = Convert.ToInt32(arr[3]);
+                                    good.StockB = Convert.ToInt32(arr[4]);
+                                    good.PriceModifier = Convert.ToDecimal(arr[6]);
+                                    market.Goods[index] = good;
                                     break;
                                 }
 
-                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                MarketGood good2 = new MarketGood();
+                                good2.Nickname = arr[0].ToLower();
+                                good2.StockA = Convert.ToInt32(arr[3]);
+                                good2.StockB = Convert.ToInt32(arr[4]);
+                                good2.PriceModifier = Convert.ToDecimal(arr[6]);
+                                market.Goods.Add(good2);
                                 break;
                         }
                     }
@@ -1268,17 +1279,28 @@ namespace DSCore.Gen
                                 market.Base = ii.Value.ToLower();
                                 break;
                             case "marketgood":
-                                if (market.Good == null)
-                                    market.Good = new Dictionary<string, decimal>();
+                                if (market.Goods == null)
+                                    market.Goods = new List<MarketGood>();
 
                                 string[] arr = ii.Value.Split(",");
-                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                if (market.Goods.Any(x => x.Nickname == arr[0])) // Mimic how FL reads ini files
                                 {
-                                    market.Good[arr[0].ToLower().Replace("_package", "")] = Convert.ToDecimal(arr[6]);
+                                    int index = market.Goods.FindIndex(x => x.Nickname == arr[0]);
+                                    MarketGood good = market.Goods[index];
+                                    good.Nickname = arr[0].ToLower().Replace("_package", "");
+                                    good.StockA = Convert.ToInt32(arr[3]);
+                                    good.StockB = Convert.ToInt32(arr[4]);
+                                    good.PriceModifier = Convert.ToDecimal(arr[6]);
+                                    market.Goods[index] = good;
                                     break;
                                 }
 
-                                market.Good.Add(arr[0].ToLower().Replace("_package", ""), Convert.ToDecimal(arr[6]));
+                                MarketGood good2 = new MarketGood();
+                                good2.Nickname = arr[0].ToLower();
+                                good2.StockA = Convert.ToInt32(arr[3]);
+                                good2.StockB = Convert.ToInt32(arr[4]);
+                                good2.PriceModifier = Convert.ToDecimal(arr[6]);
+                                market.Goods.Add(good2);
                                 break;
                         }
                     }
@@ -1309,17 +1331,28 @@ namespace DSCore.Gen
                                 market.Base = ii.Value.ToLower();
                                 break;
                             case "marketgood":
-                                if (market.Good == null)
-                                    market.Good = new Dictionary<string, decimal>();
+                                if (market.Goods == null)
+                                    market.Goods = new List<MarketGood>();
 
                                 string[] arr = ii.Value.Split(",");
-                                if (market.Good.ContainsKey(arr[0])) // Mimic how FL reads ini files
+                                if (market.Goods.Any(x => x.Nickname == arr[0])) // Mimic how FL reads ini files
                                 {
-                                    market.Good[arr[0].ToLower()] = Convert.ToDecimal(arr[6]);
+                                    int index = market.Goods.FindIndex(x => x.Nickname == arr[0]);
+                                    MarketGood good = market.Goods[index];
+                                    good.Nickname = arr[0].ToLower();
+                                    good.StockA = Convert.ToInt32(arr[3]);
+                                    good.StockB = Convert.ToInt32(arr[4]);
+                                    good.PriceModifier = Convert.ToDecimal(arr[6]);
+                                    market.Goods[index] = good;
                                     break;
                                 }
 
-                                market.Good.Add(arr[0].ToLower(), Convert.ToDecimal(arr[6]));
+                                MarketGood good2 = new MarketGood();
+                                good2.Nickname = arr[0].ToLower();
+                                good2.StockA = Convert.ToInt32(arr[3]);
+                                good2.StockB = Convert.ToInt32(arr[4]);
+                                good2.PriceModifier = Convert.ToDecimal(arr[6]);
+                                market.Goods.Add(good2);
                                 break;
                         }
                     }

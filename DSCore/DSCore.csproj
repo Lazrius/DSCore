@@ -15,7 +15,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\DSCore.Api\DSCore.Api.csproj" />
+    <ProjectReference Include="..\DSCore.Ini\DSCore.Ini.csproj" />
   </ItemGroup>
 
 </Project>

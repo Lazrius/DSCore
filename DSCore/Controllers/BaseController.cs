@@ -19,7 +19,7 @@ namespace DSCore.Controllers
             {
                 var bases = Utils.GetDatabaseCollection<Base>("Bases", ref error);
                 if (error != Errors.Null)
-                    throw new InvalidOperationException("The database was unable to access the Factions collection.");
+                    throw new InvalidOperationException("The database was unable to access the Bases collection.");
 
                 var factions = Utils.GetDatabaseCollection<Faction>("Factions", ref error);
                 if (error != Errors.Null)
@@ -119,39 +119,41 @@ namespace DSCore.Controllers
                 eList.Add("CM", new List<object>());
 
                 // Load in all the commodities for this base
-                foreach (var i in marketCommodities.Find(x => x.Base == nickname).Good)
+                foreach (var i in marketCommodities.Find(x => x.Base == nickname).Goods)
                 {
-                    Commodity commodity = commodities.First(x => x.Nickname == i.Key);
-                    Good good = goods.First(x => x.Nickname == i.Key);
-                    commodity.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
+                    Commodity commodity = commodities.First(x => x.Nickname == i.Nickname);
+                    Good good = goods.First(x => x.Nickname == i.Nickname);
+                    commodity.Price = good.Price * ((float)i.PriceModifier == 0 ? 1 : (float)i.PriceModifier);
+                    if (i.StockA == 150 && i.StockB == 500) // If the base sells the item, I have literally no idea why FL is like this
+                        commodity.BaseSells = true;
                     cList.Add(commodity);
                 }
 
                 // Load in all the ships for this base, if any
                 var baseShips = marketShips.Find(x => x.Base == nickname);
                 if (baseShips != null)
-                    foreach (var i in baseShips.Good)
+                    foreach (var i in baseShips.Goods)
                     {
-                        Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Key.Replace("_package", ""));
+                        Ship ship = ships.FirstOrDefault(x => x.Nickname == i.Nickname.Replace("_package", ""));
                         if (ship == null)
                             continue;
-                        Good good = goods.First(x => x.Nickname == i.Key);
-                        ship.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
+                        Good good = goods.First(x => x.Nickname == i.Nickname.Replace("_package", ""));
+                        ship.Price = good.Price * ((float)i.PriceModifier == 0 ? 1 : (float)i.PriceModifier);
                         sList.Add(ship);
                     }
 
                 // Load in all the equipment for the base
-                foreach (var i in marketEquipment.Find(x => x.Base == nickname).Good)
+                foreach (var i in marketEquipment.Find(x => x.Base == nickname).Goods)
                 {
                     try
                     {
                         string equipType;
-                        dynamic equip = weapons.FirstOrDefault(x => x.Nickname == i.Key);
+                        dynamic equip = weapons.FirstOrDefault(x => x.Nickname == i.Nickname);
                         equipType = "Weapon";
 
                         if (equip == null)
                         {
-                            equip = shields.FirstOrDefault(x => x.Nickname == i.Key);
+                            equip = shields.FirstOrDefault(x => x.Nickname == i.Nickname);
                             equipType = "Shield";
                             if (equip != null)
                                 if (((Shield)equip).Nickname.Contains("pod")) continue;
@@ -160,22 +162,22 @@ namespace DSCore.Controllers
                         if (equip == null)
                         {
                             equipType = "Thruster";
-                            equip = thrusters.FirstOrDefault(x => x.Nickname == i.Key);
+                            equip = thrusters.FirstOrDefault(x => x.Nickname == i.Nickname);
                         }
                             
 
                         if (equip == null)
                         {
                             equipType = "CM";
-                            equip = cms.FirstOrDefault(x => x.Nickname == i.Key);
+                            equip = cms.FirstOrDefault(x => x.Nickname == i.Nickname);
                         }
                             
 
                         if (equip == null)
                             continue;
 
-                        Good good = goods.First(x => x.Nickname == i.Key);
-                        equip.Price = good.Price * ((float)i.Value == 0 ? 1 : (float)i.Value);
+                        Good good = goods.First(x => x.Nickname == i.Nickname);
+                        equip.Price = good.Price * ((float)i.PriceModifier == 0 ? 1 : (float)i.PriceModifier);
                         eList[equipType].Add((object)equip);
                     } catch { continue;  }
                 }
