@@ -83,7 +83,8 @@
                             <a href="@($"{ViewContext.HttpContext.Request.Path}/{weapon.Nickname}")"> @value </a>
                         </td>
                         <td>@weapon.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US"))</td>
-                        <td>@(value.ToLower().Contains("nomad") ? "Nomad" : weapon.Munition.Explosion == null ? TypeFunctions.EnumToString(weapon.Munition.WeaponType) : "Explosive")</td>
+                        <td>@(value.ToLower().Contains("nomad") ? "Nomad" : weapon.Munition.Explosion == null ? (TypeFunctions.EnumToString(weapon.Munition.WeaponType) == 
+                            "Neutral" && value.ToUpper() == value ? "Codename" : "Neutral") : "Explosive")</td>
                         <td>@((weapon.Munition.HullDamage + explosionHull).ToString("N0")) @(explosionRadius == 0 ? null : Html.Raw("(" + explosionRadius + " m radius)"))</td>
                         <td>@((weapon.Munition.ShieldDamage + weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>
                         <td>@((weapon.Munition.EnegryDamage + explosionShield).ToString("N0"))</td>

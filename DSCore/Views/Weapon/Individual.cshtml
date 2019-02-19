@@ -16,13 +16,13 @@
 <div class="text-center">
     <div class="window window-cell">
         <h2>@ViewData["Title"]</h2>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <h1>TODO: Add icon</h1>
 
         @Html.Raw(Utils.XmlToHtml(Infocards.First(x => x.Key == Model.Infocard).Value))
     </div>
-    
+
     @{
         float explosionHull = 0, explosionShield = 0;
         if (Model.Munition.Explosion != null)
@@ -36,6 +36,7 @@
         munStuff += "<span>Projectile Lifetime: </span>" + Model.Munition.Lifetime.ToString("N0") + (Model.Munition.Lifetime == 1 ? " Second" : " Seconds") + "<br/>";
         munStuff += "<span>Projectile Speed: </span>" + Model.MuzzleVelocity.ToString("N0") + " m/s<br/>";
         munStuff += "<span>Range: </span>" + Model.MuzzleVelocity * Model.Munition.Lifetime + " m<br/>";
+        munStuff += "<span>Refire Rate: </span>" + (1 / Model.RefireDelay).ToString("N2") + "</br>";
         if (Model.Munition.Explosion != null)
         {
             munStuff += "<span>Is Cruise Disrupter: </span>" + (Model.Munition.IsCruiseDistupter ? "Yes" : "No") + "<br/>";
@@ -44,28 +45,28 @@
             munStuff += "<span>Explosion Strength: </span>" + Model.Munition.Explosion.Strength + "<br/>";
         }
     }
-    
+
     <div class="window window-cell">
         <h2>@ViewData["Title"]</h2>
         <div class="text-left">
             <p>
-                <span>Nickname: </span> @Model.Nickname <br/>
-                <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br/>
-                <span>Weapon Type: </span>@(Convert.ToString(ViewData["Title"]).ToLower().Contains("nomad") ? "Nomad" : Model.Munition.Explosion == null ? TypeFunctions.EnumToString(Model.Munition.WeaponType) : "Explosive")<br/>
-                <span>Hull Damage: </span>@((Model.Munition.HullDamage + explosionHull).ToString("N0"))<br/>
-                <span>Shield Damage: </span>@((Model.Munition.ShieldDamage + Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
-                <span>Energy Damage: </span>@((Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br/>
-                <span>Gun Hitpoints: </span> @Model.Hitpoints <br/>
-                <span>Has Forced Orientation: </span> @(Model.Munition.HasForcedOrientation ? "Yes" : "No")<br/>
-                <span>Volume: </span> @(Model.Volume.ToString("N1")) <br/>
-                <span>Requires Ammo: </span> @(Model.Munition.RequiresAmmo ? "Yes" : "No") <br/>
-                @(Model.Munition.RequiresAmmo ? Html.Raw("<span>Ammo Limit: </span>" + Model.Munition.AmmoLimit.ToString("N0") + " <br/>" + 
-                                                         (Model.Munition.Hitpoints != 0 ? "<span>Projectile Hitpoints: </span>" + Model.Munition.Hitpoints.ToString("N0") + "<br/>" : String.Empty)) : null)
+                <span>Nickname: </span> @Model.Nickname <br />
+                <span>Price: </span> @Model.Price.ToString("C0", CultureInfo.CreateSpecificCulture("en-US")) Credits<br />
+                <span>Weapon Type: </span>@(Convert.ToString(ViewData["Title"]).ToLower().Contains("nomad") ? "Nomad" : Model.Munition.Explosion == null ? TypeFunctions.EnumToString(Model.Munition.WeaponType) : "Explosive")<br />
+                <span>Hull Damage: </span>@((Model.Munition.HullDamage + explosionHull).ToString("N0"))<br />
+                <span>Shield Damage: </span>@((Model.Munition.ShieldDamage + Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br />
+                <span>Energy Damage: </span>@((Model.Munition.EnegryDamage + explosionShield).ToString("N0"))<br />
+                <span>Gun Hitpoints: </span> @Model.Hitpoints <br />
+                <span>Has Forced Orientation: </span> @(Model.Munition.HasForcedOrientation ? "Yes" : "No")<br />
+                <span>Volume: </span> @(Model.Volume.ToString("N1")) <br />
+                <span>Requires Ammo: </span> @(Model.Munition.RequiresAmmo ? "Yes" : "No") <br />
+                @(Model.Munition.RequiresAmmo ? Html.Raw("<span>Ammo Limit: </span>" + Model.Munition.AmmoLimit.ToString("N0") + " <br/>" +
+                                                                 (Model.Munition.Hitpoints != 0 ? "<span>Projectile Hitpoints: </span>" + Model.Munition.Hitpoints.ToString("N0") + "<br/>" : String.Empty)) : null)
                 @(Html.Raw(munStuff))
             </p>
         </div>
     </div>
-    
+
     <div class="window">
         <h1>Sellpoints</h1>
         <table>
