@@ -18,7 +18,7 @@
 import {UTFEntry} from "./utf.js";
 import {loadConstraints, FixedConstraint} from "./constraint.js";
 import {loadHardpoints} from "./hardpoint.js";
-import {mat4} from "../glmatrix/index.js";
+import {mat4} from "../GLmatrix/index.js";
 
 const TAG_ROOT      = "Root",
 	TAG_OBJECT_NAME = "object name",

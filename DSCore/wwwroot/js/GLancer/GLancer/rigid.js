@@ -3,7 +3,7 @@ import {UTFReader, UTFEntry} from "./utf.js";
 import {VMeshWire, VMeshRef} from "./vmesh.js";
 import {CompoundModel, SimpleModel} from "./compound.js";
 import {loadHardpoints} from "./hardpoint.js";
-import {vec3, mat4} from "../glmatrix/index.js";
+import {vec3, mat4} from "../GLmatrix/index.js";
 
 const LEVEL_PATTERN = /^Level(\d+)$/i;
 
