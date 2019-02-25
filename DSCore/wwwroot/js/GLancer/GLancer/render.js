@@ -12,7 +12,7 @@
  * at every VMeshGroup referenced in VMeshRef. Indices are modified directly in
  * element buffer of vertex array object and it is done only once.
  */
-import {vec2, vec3, vec4, mat3, mat4} from "../glmatrix/index.js";
+import {vec2, vec3, vec4, mat3, mat4} from "../GLmatrix/index.js";
 import {getRangeIndex} from "./core.js";
 import {Glancer} from "./system.js";
 import {UTFReader, UTFEntry} from "./utf.js";

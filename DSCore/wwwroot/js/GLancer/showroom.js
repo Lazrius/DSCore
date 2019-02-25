@@ -1,5 +1,5 @@
-import {Glancer} from "./glancer/system.js";
-import {ShowRoomScene} from "./glancer/scene.js";
+import {Glancer} from "./GLancer/system.js";
+import {ShowRoomScene} from "./GLancer/scene.js";
 
 const viewport = document.getElementById("model"),
 	zoom = document.getElementById("zoom");

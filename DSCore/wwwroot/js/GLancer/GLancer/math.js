@@ -1,7 +1,7 @@
 /**
  * Adds extra functions to compliment glMatrix library
  */
-import {mat4} from "../glmatrix/index.js";
+import {mat4} from "../GLmatrix/index.js";
 
 export function lerp(a, b, t) {
 	return a * (1 - t) + b * t;

@@ -1,4 +1,4 @@
-import {quat, vec3, mat3, mat4} from "../glmatrix/index.js";
+import {quat, vec3, mat3, mat4} from "../GLmatrix/index.js";
 import {SimpleRigidModel, CompoundRigidModel} from "./rigid.js";
 
 /**
