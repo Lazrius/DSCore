@@ -1152,6 +1152,8 @@ namespace DSCore.Gen
                 Console.WriteLine();
 
                 Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Tests Complete. Database Generated and files copied. Press enter or close the application.");
             }
         }
 
